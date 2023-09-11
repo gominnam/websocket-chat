@@ -10,6 +10,12 @@ class GreetingController {
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     fun greeting(user: User): User {
-        return User("Hello, " + HtmlUtils.htmlEscape(user.name))
+        return User(HtmlUtils.htmlEscape(user.name))
+    }
+
+    @MessageMapping("/message")
+    @SendTo("/topic/greetings")
+    fun send(message: Message): Message {
+        return Message(HtmlUtils.htmlEscape(message.message))
     }
 }
