@@ -2,5 +2,6 @@ package com.kosok.othercountrychat
 
 
 data class Message (
-    var message: String
+    var sender: String,
+    var content: String
 )

@@ -7,15 +7,15 @@ import org.springframework.web.util.HtmlUtils
 
 @Controller
 class GreetingController {
-    @MessageMapping("/hello")
+    @MessageMapping("/entry")
     @SendTo("/topic/greetings")
-    fun greeting(user: User): User {
-        return User(HtmlUtils.htmlEscape(user.name))
+    fun greeting(message: Message): Message {
+        return Message(HtmlUtils.htmlEscape(message.sender), HtmlUtils.htmlEscape(message.content))
     }
 
     @MessageMapping("/message")
     @SendTo("/topic/greetings")
     fun send(message: Message): Message {
-        return Message(HtmlUtils.htmlEscape(message.message))
+        return Message(HtmlUtils.htmlEscape(message.sender + ": "), HtmlUtils.htmlEscape(message.content))
     }
 }

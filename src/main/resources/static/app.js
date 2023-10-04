@@ -5,8 +5,7 @@ function setConnected(connected) {
     $("#disconnect").prop("disabled", !connected);
     if (connected) {
         $("#conversation").show();
-    }
-    else {
+    } else {
         $("#conversation").hide();
     }
     $("#greetings").html("");
@@ -18,42 +17,39 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
-        sendName(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/greetings', function (greeting) {
             showMessage(JSON.parse(greeting.body));
         });
+        joinRoom();
     });
-
 }
 
 function disconnect() {
     if (stompClient !== null) {
-        sendName(false);
+        exitRoom();
         stompClient.disconnect();
     }
     setConnected(false);
     console.log("Disconnected");
 }
 
-function sendName(connected) {
-    if(connected)
-        stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()+"님이 입장하셨습니다."}));
-    else if(!connected)
-        stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()+"님이 퇴장하셨습니다."}));
+function joinRoom(){
+    stompClient.send("/app/entry", {}, JSON.stringify({'sender': $("#name").val(), 'content': '님이 입장하셨습니다.'}));
+}
+
+function exitRoom(){
+    stompClient.send("/app/entry", {}, JSON.stringify({'sender': $("#name").val(), 'content': '님이 퇴장하셨습니다.'}));
 }
 
 function sendMessage(){
-    if($("#message").val() == null) return;
-    stompClient.send("/app/message", {}, JSON.stringify({'message': $("#message").val()}));
-    $("#message").val("");
+    if($("#content").val() == null) return;
+    stompClient.send("/app/message", {}, JSON.stringify({'sender': $("#name").val(), 'content': $("#content").val()}));
+    $("#content").val("");
 }
 
 function showMessage(message) {
-    let recieveMessage = message.message;
-    if(recieveMessage == null)
-        recieveMessage = message.name;
-    $("#greetings").append("<tr><td>" + recieveMessage + "</td></tr>");
+    $("#greetings").append("<tr><td>" + message.sender + message.content + "</td></tr>");
 }
 
 function connectValidation() {
@@ -63,7 +59,6 @@ function connectValidation() {
     }
     return true;
 }
-
 
 $(function () {
     $("form").on('submit', function (e) {
