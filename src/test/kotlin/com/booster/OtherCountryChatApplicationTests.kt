@@ -1,4 +1,4 @@
-package com.kosok.othercountrychat
+package com.booster
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

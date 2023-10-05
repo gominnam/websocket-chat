@@ -13,7 +13,7 @@ function setConnected(connected) {
 
 function connect() {
     if(!connectValidation()) return;
-    var socket = new SockJS('/other-country-chat');
+    var socket = new SockJS('/websocket-chat');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);

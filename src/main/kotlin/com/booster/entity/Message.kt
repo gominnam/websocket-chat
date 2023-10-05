@@ -1,4 +1,4 @@
-package com.kosok.othercountrychat
+package com.booster.entity
 
 
 data class Message (

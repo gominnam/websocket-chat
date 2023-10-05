@@ -1,11 +1,11 @@
-package com.kosok.othercountrychat
+package com.booster
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class OtherCountryChatApplication
+class WebsocketChatApplication
 
 fun main(args: Array<String>) {
-    runApplication<OtherCountryChatApplication>(*args)
+    runApplication<WebsocketChatApplication>(*args)
 }

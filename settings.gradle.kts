@@ -1,1 +1,1 @@
-rootProject.name = "other-country-chat"
+rootProject.name = "websocket-chat"
