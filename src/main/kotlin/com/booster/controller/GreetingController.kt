@@ -1,4 +1,4 @@
-package com.booster
+package com.booster.controller
 
 import com.booster.entity.Message
 import org.springframework.messaging.handler.annotation.MessageMapping
