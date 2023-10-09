@@ -18,16 +18,10 @@ class UserControllerTest @Autowired constructor(val mockMvc: MockMvc, val mapper
 
     @Test
     fun saveUser() {
-        var user = User(null, "kosok03@naver.com", "고민준", "password")
+        var user = User(null, "test@naver.com", "고민준", "password")
         mockMvc.perform(post("/user/save")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(user)))
             .andExpect(status().isOk)
-//            .andExpect(jsonPath("\$.id").exists())
-//            .andExpect(jsonPath("\$.email").value("kosok03@naver.com"))
-    }
-    @Test
-    fun getAllUsers() {
-
     }
 }
