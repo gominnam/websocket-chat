@@ -25,8 +25,14 @@ class UserController @Autowired constructor(private val userService: UserService
         return userService.save(user)
     }
 
-    @GetMapping("/find/{id}")
+    @PostMapping("/find/{id}")
     fun findUser(@PathVariable id: Long): Optional<User> {
         return userService.findById(id)
+    }
+
+    @PostMapping("/delete/{id}")
+    fun deleteUser(@PathVariable id: Long): String {
+        userService.deleteById(id)
+        return "delete success"
     }
 }

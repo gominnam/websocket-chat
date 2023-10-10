@@ -12,7 +12,7 @@ class UserService @Autowired constructor(
     fun save(user: User): User {
         return userRepository.save(user)
     }
-
     fun findById(id: Long) = userRepository.findById(id)
     fun findAll() = userRepository.findAll()
+    fun deleteById(id: Long) = userRepository.deleteById(id)
 }

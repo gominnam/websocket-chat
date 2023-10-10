@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank
 data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
     @NotBlank(message = "Username is required")
     var email: String,
     @Email(message = "Invalid email format")
