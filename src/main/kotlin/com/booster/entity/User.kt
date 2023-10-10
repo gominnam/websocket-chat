@@ -12,10 +12,10 @@ data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-    @NotBlank(message = "Username is required")
-    var email: String,
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
+    var email: String,
+    @NotBlank(message = "Username is required")
     var name: String,
     var password: String
 ) {

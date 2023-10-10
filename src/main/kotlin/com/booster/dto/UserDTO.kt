@@ -1,4 +1,10 @@
 package com.booster.dto
 
-class UserDTO {
+data class UserDTO (
+     var id: Long? = null,
+     var email: String,
+     var name: String,
+     var password: String
+) {
+    constructor() : this(null, "", "", "")
 }

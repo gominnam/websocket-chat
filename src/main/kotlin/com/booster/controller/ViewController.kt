@@ -9,4 +9,9 @@ class ViewController {
     fun index(): String {
         return "index"
     }
+
+    @GetMapping("/chat")
+    fun chat(): String {
+        return "dashboard"
+    }
 }

@@ -1,10 +1,9 @@
 package com.booster.controller
 
 import com.booster.entity.User
+import com.booster.repositories.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,18 +14,24 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
 
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserControllerTest @Autowired constructor(val mockMvc: MockMvc, val mapper: ObjectMapper){
+class UserControllerTest @Autowired constructor(
+    val mockMvc: MockMvc, val mapper: ObjectMapper, val userRepository: UserRepository
+){
+    var user: User? = null
 
-//    var user = User(null, "test@naver.com", "고민준", "password")
-
+    @BeforeEach
+    fun setup() {
+        //mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
+        user = userRepository.getReferenceById(1L)
+    }
     companion object {
         @BeforeAll
         fun generateRandomUser(): User {
-            var random = Random()
-            val randomNumber = random.nextInt(10000)
+            val randomNumber = Random().nextInt(10000)
             val username = "user${randomNumber}"
             val email = "user${randomNumber}@booster.com"
             return User(null, email, username, "password")
@@ -34,31 +39,43 @@ class UserControllerTest @Autowired constructor(val mockMvc: MockMvc, val mapper
     }
 
     @Test
+    @DisplayName("CRUD Test")
     fun crud_User() {
-        var user = generateRandomUser()
+        var curUser = generateRandomUser()
 
         //save
-        var insertResult = mockMvc.perform(post("/user/save")
+        var insertResult = mockMvc.perform(post("/api/user/save")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(user)))
+            .content(mapper.writeValueAsString(curUser)))
             .andExpect(status().isOk)
             .andReturn()
 
-        user = mapper.readValue(
+        curUser = mapper.readValue(
             insertResult.response.contentAsString,
             User::class.java
         )
 
         //find
-        mockMvc.perform(post("/user/find/${user.id}")
+        mockMvc.perform(post("/api/user/find/${curUser.id}")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.email").value(user.email))
-            .andExpect(jsonPath("$.name").value(user.name))
+            .andExpect(jsonPath("$.email").value(curUser.email))
+            .andExpect(jsonPath("$.name").value(curUser.name))
 
         //delete
-        mockMvc.perform(post("/user/delete/${user.id}")
+        mockMvc.perform(post("/api/user/delete/${curUser.id}")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
+    }
+
+    @Test
+    @DisplayName("Login Test")
+    fun login(){
+        mockMvc.perform(post("/api/user/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(user)))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.email").value(user?.email))
+            .andExpect(jsonPath("$.name").value(user?.name))
     }
 }
