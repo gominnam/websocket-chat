@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -18,14 +20,14 @@ import java.util.*
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@ContextConfiguration(locations= ["classpath:application.properties"]) todo: create test configuration file
 class UserControllerTest @Autowired constructor(
     val mockMvc: MockMvc, val mapper: ObjectMapper, val userRepository: UserRepository
 ){
     var user: User? = null
 
-    @BeforeEach
+    @BeforeAll
     fun setup() {
-        //mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
         user = userRepository.getReferenceById(1L)
     }
     companion object {

@@ -4,26 +4,23 @@ import com.booster.dto.UserDTO
 import com.booster.entity.User
 import com.booster.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @RequestMapping("/api/user")
 class UserController @Autowired constructor(private val userService: UserService) {
-
-    @GetMapping("/test")
-    fun test(): String {
-        return "test"
-    }
-
     @GetMapping("/all")
     fun getAllUsers(): List<User> {
         return userService.findAll()
     }
 
     @PostMapping("/save")
-    fun saveUser(@RequestBody user: User): User {
-        return userService.save(user)
+    fun saveUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
+        return ResponseEntity(userService.save(userDTO), HttpStatus.OK)
     }
 
     @PostMapping("/find/{id}")
@@ -38,7 +35,8 @@ class UserController @Autowired constructor(private val userService: UserService
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody userDTO: UserDTO): UserDTO {
-        return userService.login(userDTO)
+    fun login(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
+        return ResponseEntity(userService.login(userDTO), HttpStatus.OK)
     }
+
 }

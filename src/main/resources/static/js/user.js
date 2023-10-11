@@ -1,6 +1,7 @@
 const signUpButton = document.getElementById('signUp');
 const signInButton = document.getElementById('signIn');
 const userSignInButton = document.getElementById('userSignIn');
+const userSingUpButton = document.getElementById('userSignUp');
 const container = document.getElementById('container');
 
 signInButton.addEventListener('click', () => {
@@ -41,6 +42,39 @@ userSignInButton.addEventListener('click', () => {
         .catch(error => {
         console.error('Error:', error);
     });
+});
+
+userSingUpButton.addEventListener('click', () => {
+    const email = document.getElementById('save-email').value;
+    const name = document.getElementById('save-name').value;
+    const password = document.getElementById('save-password').value;
+    // if(!signUpValidation(email, password, name)) return; todo: validation check
+
+    const data = {
+        email: email,
+        password: password,
+        name: name
+    };
+
+    fetch('/api/user/save', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            Accept: 'application/json'
+        }
+    }).then(response => response.json())
+        .then(data => {
+            console.log("data : " + JSON.stringify(data));
+            if(data.status === 200){
+                window.location.href = "/chat";
+            }else{
+                alert("Sign up failed");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 });
 
 function loginValidation(email, password){
