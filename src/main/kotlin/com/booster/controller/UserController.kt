@@ -2,30 +2,36 @@ package com.booster.controller
 
 import com.booster.dto.UserDTO
 import com.booster.entity.User
+import com.booster.payload.request.UserRequest
+import com.booster.payload.response.UserResponse
 import com.booster.services.UserService
+import com.booster.services.UserServiceImpl
+import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @RequestMapping("/api/user")
-class UserController @Autowired constructor(private val userService: UserService) {
-    @GetMapping("/all")
-    fun getAllUsers(): List<User> {
-        return userService.findAll()
-    }
+class UserController @Autowired constructor(
+    private val userService: UserService,
+    private val modelMapper: ModelMapper
+) {
 
     @PostMapping("/save")
-    fun saveUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
-        return ResponseEntity(userService.save(userDTO), HttpStatus.OK)
+    fun saveUser(@RequestBody request: UserRequest): ResponseEntity<UserResponse> {
+        var userDTO = modelMapper.map(request, UserDTO::class.java)
+        var createdUser = userService.createUser(userDTO)
+        var userResponse = modelMapper.map(createdUser, UserResponse::class.java)
+        return ResponseEntity.ok(userResponse)
     }
 
     @PostMapping("/find/{id}")
-    fun findUser(@PathVariable id: Long): Optional<User> {
-        return userService.findById(id)
+    fun findUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
+        var findUser = modelMapper.map(userService.findById(id), UserResponse::class.java)
+        return ResponseEntity.ok(findUser)
     }
 
     @PostMapping("/delete/{id}")
@@ -35,8 +41,11 @@ class UserController @Autowired constructor(private val userService: UserService
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
-        return ResponseEntity(userService.login(userDTO), HttpStatus.OK)
+    fun login(@RequestBody request: UserRequest): ResponseEntity<UserResponse> {
+        var userDTO = modelMapper.map(request, UserDTO::class.java)
+        var loginUser = userService.login(userDTO)
+        var userResponse = modelMapper.map(loginUser, UserResponse::class.java)
+        return ResponseEntity(userResponse, HttpStatus.OK)
     }
 
 }

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.Query
 
 interface UserRepository: JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.email = ?1 AND u.password = ?2")
-    fun login(email: String, password: String): User
+    fun login(email: String, password: String): User?
 }

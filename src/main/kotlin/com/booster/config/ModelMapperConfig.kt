@@ -13,5 +13,4 @@ class ModelMapperConfig {
         modelMapper.configuration.setMatchingStrategy(MatchingStrategies.STRICT)
         return modelMapper
     }
-
 }
