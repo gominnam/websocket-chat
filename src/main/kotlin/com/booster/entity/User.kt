@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
+import org.hibernate.validator.constraints.Length
 
 @Entity
 data class User (
@@ -16,7 +17,9 @@ data class User (
     @NotBlank(message = "Email is required")
     var email: String,
     @NotBlank(message = "Username is required")
+    @Length(min = 3, max = 15)
     var name: String,
+    @Length(min = 7, max = 15)
     var password: String
 ) {
     constructor() : this(null, "", "", "")
