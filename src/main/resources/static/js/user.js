@@ -32,7 +32,6 @@ userSignInButton.addEventListener('click', () => {
         }
     }).then(response => response.json())
         .then(data => {
-            console.log("data : " + JSON.stringify(data));
             if(data.status === 200){
                 window.location.href = "/chat";
             }else{
@@ -65,11 +64,10 @@ userSingUpButton.addEventListener('click', () => {
         }
     }).then(response => response.json())
         .then(data => {
-            console.log("data : " + JSON.stringify(data));
             if(data.status === 200){
                 window.location.href = "/chat";
             }else{
-                alert("Sign up failed");
+                alert(data.message);
             }
         })
         .catch(error => {

@@ -2,7 +2,11 @@ package com.booster.services
 
 import com.booster.dto.UserDTO
 import com.booster.entity.User
+import com.booster.payload.response.UserResponse
 import com.booster.repositories.UserRepository
+import com.booster.util.ApiResponse
+import com.booster.util.HttpStatus
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -12,11 +16,25 @@ class UserServiceImpl @Autowired constructor(
     private val userRepository: UserRepository,
     private val modelMapper: ModelMapper
 ): UserService {
-    override fun createUser(userDTO: UserDTO?): UserDTO? {
+    private val logger = KotlinLogging.logger {}
+
+    override fun createUser(userDTO: UserDTO?): ApiResponse<UserResponse>? {
         var user = modelMapper.map(userDTO, User::class.java)
+        if(userRepository.existsByEmail(user.email)) {
+            return ApiResponse.Builder<UserResponse>()
+                .status(HttpStatus.BAD_REQUEST)
+                .message("email already exists")
+                .build()
+        }
+
         var savedUser = userRepository.save(user)
+        var resultUser = modelMapper.map(savedUser, UserResponse::class.java)
         //todo: log.info("savedUser: ${savedUser}")
-        return modelMapper.map(savedUser, UserDTO::class.java)
+        return ApiResponse.Builder<UserResponse>()
+            .status(HttpStatus.OK)
+            .message("welcome ${savedUser.name}" + " " + "your account has been created")
+            .data(resultUser)
+            .build()
     }
 
     override fun findById(id: Long): UserDTO {

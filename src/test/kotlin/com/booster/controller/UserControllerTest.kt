@@ -2,16 +2,18 @@ package com.booster.controller
 
 import com.booster.entity.User
 import com.booster.payload.request.UserRequest
+import com.booster.payload.response.UserResponse
 import com.booster.repositories.UserRepository
+import com.booster.util.ApiResponse
+import com.booster.util.HttpStatus
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.junit.jupiter.api.*
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.annotation.DirtiesContext
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -30,6 +32,7 @@ class UserControllerTest @Autowired constructor(
     val modelMapper: ModelMapper
 ){
     var user: User? = null
+    val logger = KotlinLogging.logger {}
 
     @BeforeAll
     fun setup() {
@@ -73,6 +76,29 @@ class UserControllerTest @Autowired constructor(
         mockMvc.perform(post("/api/user/delete/${resultUser.id}")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
+    }
+
+    @Test
+    fun httpStatusTest(){
+        var test = ApiResponse.Builder<UserResponse>()
+            .status(HttpStatus.BAD_REQUEST)
+            .message("email already exists")
+            .build()
+
+        logger.info{ "test value : ${test.status.toString()}" }
+    }
+
+    @Test
+    @DisplayName("findByEmail Test")
+    fun findByEmail(){
+        var request = modelMapper.map(user, UserRequest::class.java)
+        logger.info{ "request: request: $request" }
+
+        mockMvc.perform(post("/api/user/find/${user?.id}")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.email").value(user?.email))
+            .andExpect(jsonPath("$.name").value(user?.name))
     }
 
     @Test
