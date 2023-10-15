@@ -4,6 +4,8 @@ import com.booster.dto.UserDTO
 import com.booster.entity.User
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.UserResponse
+import com.booster.services.HashService
+import com.booster.services.TokenService
 import com.booster.services.UserService
 import com.booster.services.UserServiceImpl
 import com.booster.util.ApiResponse
@@ -19,15 +21,16 @@ import java.util.*
 @RequestMapping("/api/user")
 class UserController @Autowired constructor(
     private val userService: UserService,
-    private val modelMapper: ModelMapper
+    private val modelMapper: ModelMapper,
+    private val hashService: HashService,
+    private val tokenService: TokenService,
 ) {
     val logger = KotlinLogging.logger {}
+
     @PostMapping("/save")
     fun saveUser(@RequestBody request: UserRequest): ApiResponse<UserResponse>? {
         var userDTO = modelMapper.map(request, UserDTO::class.java)
-        var t = userService.createUser(userDTO)
-        logger.info{"HttpStatus in controller : $t"}
-        return t
+        return userService.createUser(userDTO)
     }
 
     @PostMapping("/login")

@@ -47,8 +47,6 @@ userSingUpButton.addEventListener('click', () => {
     const email = document.getElementById('save-email').value;
     const name = document.getElementById('save-name').value;
     const password = document.getElementById('save-password').value;
-    // if(!signUpValidation(email, password, name)) return; todo: validation check
-
     const data = {
         email: email,
         password: password,
