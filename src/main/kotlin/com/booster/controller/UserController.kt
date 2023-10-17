@@ -2,14 +2,14 @@ package com.booster.controller
 
 import com.booster.config.toUser
 import com.booster.dto.UserDTO
-import com.booster.entity.User
+import com.booster.exception.ErrorCode
+import com.booster.exception.UserException
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.AuthResponse
 import com.booster.payload.response.UserResponse
 import com.booster.services.HashService
 import com.booster.services.TokenService
 import com.booster.services.UserService
-import com.booster.services.UserServiceImpl
 import com.booster.util.ApiResponse
 import com.booster.util.HttpStatus
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -18,23 +18,36 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 @RestController
 @RequestMapping("/api/user")
 class UserController @Autowired constructor(
     private val userService: UserService,
     private val modelMapper: ModelMapper,
-    private val hashService: HashService,
     private val tokenService: TokenService,
 ) {
     val logger = KotlinLogging.logger {}
 
     @PostMapping("/save")
-    fun saveUser(@RequestBody request: UserRequest): ApiResponse<UserResponse>? {
+    fun saveUser(@RequestBody request: UserRequest): ApiResponse<AuthResponse>? {
         var userDTO = modelMapper.map(request, UserDTO::class.java)
+        try{
+            userService.createUser(userDTO)
+        } catch(e: UserException) {
+            if(e.getErrorCode() == ErrorCode.USER_ALREADY_EXISTS) {
+                return ApiResponse.Builder<AuthResponse>()
+                    .status(e.getHttpStatus())
+                    .message(e.message)
+                    .build()
+            }
+        }
 
-        return userService.createUser(userDTO)
+        var authResponse = AuthResponse(tokenService.createToken(userDTO))
+        return ApiResponse.Builder<AuthResponse>()
+            .status(HttpStatus.OK)
+            .message("user created")
+            .data(authResponse)
+            .build()
     }
 
     @PostMapping("/login")
