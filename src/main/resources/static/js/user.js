@@ -53,7 +53,7 @@ userSingUpButton.addEventListener('click', () => {
         name: name
     };
 
-    fetch('/api/user/save', {
+    fetch('/api/user/register', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

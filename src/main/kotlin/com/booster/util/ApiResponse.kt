@@ -3,7 +3,7 @@ package com.booster.util
 data class ApiResponse<T> (
     val status: Int? = null,
     val message: String? = null,
-    val result: T? = null
+    val data: T? = null,
 ) {
     class Builder<T> {
         private var status: Int? = null

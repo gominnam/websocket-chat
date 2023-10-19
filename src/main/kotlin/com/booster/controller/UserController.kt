@@ -28,7 +28,7 @@ class UserController @Autowired constructor(
 ) {
     val logger = KotlinLogging.logger {}
 
-    @PostMapping("/save")
+    @PostMapping("/register")
     fun saveUser(@RequestBody request: UserRequest): ApiResponse<AuthResponse>? {
         var userDTO = modelMapper.map(request, UserDTO::class.java)
         try{

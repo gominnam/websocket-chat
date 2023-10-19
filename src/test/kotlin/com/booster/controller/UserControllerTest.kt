@@ -54,7 +54,7 @@ class UserControllerTest @Autowired constructor(
         var request = modelMapper.map(generateRandomUser(), UserRequest::class.java)
 
         //save
-        var insertResult = mockMvc.perform(post("/api/user/save")
+        var insertResult = mockMvc.perform(post("/api/user/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(request)))
             .andExpect(status().isOk)

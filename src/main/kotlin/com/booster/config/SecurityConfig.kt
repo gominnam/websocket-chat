@@ -24,7 +24,7 @@ class SecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         // Define public and private routes
         http.authorizeRequests()
-            .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/user/save").permitAll()
             .requestMatchers("/api/**").authenticated()
             .anyRequest().permitAll() // In case you have a frontend
