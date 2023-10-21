@@ -7,7 +7,6 @@ import com.booster.exception.UserException
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.AuthResponse
 import com.booster.payload.response.UserResponse
-import com.booster.services.HashService
 import com.booster.services.TokenService
 import com.booster.services.UserService
 import com.booster.util.ApiResponse

@@ -32,6 +32,7 @@ allOpen {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
@@ -43,13 +44,15 @@ dependencies {
     implementation("org.webjars:sockjs-client:1.0.2")
     implementation("org.webjars:stomp-websocket:2.3.3")
     implementation("org.webjars:bootstrap:3.4.0")
-    implementation("org.webjars:jquery:3.1.1-1")
+    implementation("org.webjars:jquery:3.5.1")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.mysql:mysql-connector-j")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
+    implementation("com.h2database:h2")
+    testImplementation("junit:junit:4.13.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
