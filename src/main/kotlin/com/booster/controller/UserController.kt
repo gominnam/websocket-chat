@@ -21,15 +21,15 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/user")
 class UserController @Autowired constructor(
-    private val userService: UserService,
-    private val modelMapper: ModelMapper,
-    private val tokenService: TokenService,
+        private val userService: UserService,
+        private val modelMapper: ModelMapper,
+        private val tokenService: TokenService,
 ) {
     val logger = KotlinLogging.logger {}
 
     @PostMapping("/register")
     fun saveUser(@RequestBody request: UserRequest): ApiResponse<AuthResponse>? {
-        var userDTO = modelMapper.map(request, UserDTO::class.java)
+        val userDTO = modelMapper.map(request, UserDTO::class.java)
         try{
             userService.createUser(userDTO)
         } catch(e: UserException) {
@@ -41,7 +41,7 @@ class UserController @Autowired constructor(
             }
         }
 
-        var authResponse = AuthResponse(tokenService.createToken(userDTO))
+        val authResponse = AuthResponse(tokenService.createToken(userDTO))
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
             .message("user created")
@@ -51,24 +51,27 @@ class UserController @Autowired constructor(
 
     @PostMapping("/login")
     fun login(@RequestBody request: UserRequest): ApiResponse<AuthResponse>? {
-        var userDTO = modelMapper.map(request, UserDTO::class.java)
-        var loginUser = userService.login(userDTO) ?: return ApiResponse.Builder<AuthResponse>()
-                                                                .status(HttpStatus.BAD_REQUEST)
-                                                                .message("email or password is incorrect")
-                                                                .build()
+        val userDTO = modelMapper.map(request, UserDTO::class.java)
+        try{
+             userService.login(userDTO)
+        } catch (e: UserException){
+            return ApiResponse.Builder<AuthResponse>()
+                .status(e.getHttpStatus())
+                .message(e.message)
+                .build()
+        }
 
-        var authResponse = AuthResponse(tokenService.createToken(loginUser))
-        logger.info{"token: ${authResponse.token}"}
+        val authResponse = AuthResponse(tokenService.createToken(userDTO))
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
-            .message("welcome ${loginUser.name}")
+            .message("welcome in booster world")
             .data(authResponse)
             .build()
     }
 
     @PostMapping("/find/{id}")
     fun findUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
-        var findUser = modelMapper.map(userService.findById(id), UserResponse::class.java)
+        val findUser = modelMapper.map(userService.findById(id), UserResponse::class.java)
         return ResponseEntity.ok(findUser)
     }
 

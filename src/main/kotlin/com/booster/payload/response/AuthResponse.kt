@@ -1,7 +1,7 @@
 package com.booster.payload.response
 
 data class AuthResponse(
-    var token: String
+    var accessToken: String
 ) {
     constructor() : this("")
 }

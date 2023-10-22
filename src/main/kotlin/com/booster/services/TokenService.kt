@@ -1,7 +1,6 @@
 package com.booster.services
 
 import com.booster.dto.UserDTO
-import com.booster.entity.User
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.stereotype.Service
 import java.time.Instant

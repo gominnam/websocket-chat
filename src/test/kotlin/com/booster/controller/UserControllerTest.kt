@@ -1,9 +1,11 @@
 package com.booster.controller
 
+import com.booster.dto.UserDTO
 import com.booster.entity.User
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.UserResponse
 import com.booster.repositories.UserRepository
+import com.booster.services.TokenService
 import com.booster.util.ApiResponse
 import com.booster.util.HttpStatus
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -24,18 +26,19 @@ import java.util.*
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@ContextConfiguration(locations= ["classpath:application.properties"]) todo: create test configuration file
 class UserControllerTest @Autowired constructor(
     val mockMvc: MockMvc,
     val mapper: ObjectMapper,
     val userRepository: UserRepository,
-    val modelMapper: ModelMapper
+    val modelMapper: ModelMapper,
+    private val tokenService: TokenService,
 ){
     var user: User? = null
     val logger = KotlinLogging.logger {}
 
     @BeforeAll
     fun setup() {
+        userRepository.save(generateRandomUser())
         user = userRepository.getReferenceById(1L)
     }
     companion object {

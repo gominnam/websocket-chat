@@ -34,6 +34,7 @@ class UserServiceImpl @Autowired constructor(
     override fun login(userDTO: UserDTO?): UserDTO? {
         var user = modelMapper.map(userDTO, User::class.java)
         var loginUser = userRepository.login(user.email, user.password)
+                                        .orElseThrow { throw UserException(ErrorCode.USER_NOT_FOUND) }
         return modelMapper.map(loginUser, UserDTO::class.java)
     }
 

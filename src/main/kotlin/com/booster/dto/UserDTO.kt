@@ -1,6 +1,6 @@
 package com.booster.dto
 
-class UserDTO private constructor(
+data class UserDTO (
      var id: Long?,
      var email: String?,
      var name: String?,
