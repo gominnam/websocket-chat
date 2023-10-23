@@ -7,13 +7,12 @@ import com.booster.exception.UserException
 import com.booster.repositories.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelmapper.ModelMapper
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class UserServiceImpl @Autowired constructor(
-    private val userRepository: UserRepository,
-    private val modelMapper: ModelMapper
+class UserServiceImpl (
+    val userRepository: UserRepository,
+    val modelMapper: ModelMapper
 ): UserService {
     private val logger = KotlinLogging.logger {}
 

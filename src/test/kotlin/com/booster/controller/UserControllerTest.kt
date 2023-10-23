@@ -116,4 +116,20 @@ class UserControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.email").value(user?.email))
             .andExpect(jsonPath("$.name").value(user?.name))
     }
+
+//    fun login(@RequestBody request: UserRequest): ApiResponse<AuthResponse>? {
+//        var userDTO = modelMapper.map(request, UserDTO::class.java)
+//        var loginUser = userService.login(userDTO) ?: return ApiResponse.Builder<AuthResponse>()
+//            .status(HttpStatus.BAD_REQUEST)
+//            .message("email or password is incorrect")
+//            .build()
+//
+//        var authResponse = AuthResponse(tokenService.createToken(loginUser))
+//        logger.info{"token: ${authResponse.token}"}
+//        return ApiResponse.Builder<AuthResponse>()
+//            .status(HttpStatus.OK)
+//            .message("welcome ${loginUser.name}")
+//            .data(authResponse)
+//            .build()
+//    }
 }
