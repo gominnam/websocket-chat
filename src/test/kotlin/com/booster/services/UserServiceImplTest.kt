@@ -10,10 +10,13 @@ import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.Before
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
-import org.mockito.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
+import org.mockito.InjectMocks
+import org.mockito.Mock
 import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.modelmapper.ModelMapper
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -44,12 +47,12 @@ class UserServiceImplTest {
         given(userRepository.existsByEmail(user.email)).willReturn(true)
 
         //when
-        val throwable = catchThrowable { userService.createUser(userDTO) }
+        val thrownException = catchThrowable { userService.createUser(userDTO) }
 
         //then
-        assertThat(throwable).isNotNull()
-        assertThat(throwable).isInstanceOf(UserException::class.java)
-        assertThat(throwable.message).isEqualTo(ErrorCode.USER_ALREADY_EXISTS.description)
+        assertThat(thrownException).isNotNull()
+        assertThat(thrownException).isInstanceOf(UserException::class.java)
+        assertThat(thrownException.message).isEqualTo(ErrorCode.USER_ALREADY_EXISTS.description)
         verify(userRepository).existsByEmail(user.email)
     }
 
@@ -66,9 +69,9 @@ class UserServiceImplTest {
         //then
         assertThat(createdUser).isNotNull()
         assertThat(createdUser).isInstanceOf(UserDTO::class.java)
-        assertThat(createdUser?.email).isEqualTo("booster@naver.com")
-        assertThat(createdUser?.name).isEqualTo("name")
-        assertThat(createdUser?.password).isEqualTo("booster")
+        assertThat(createdUser!!.email).isEqualTo("booster@naver.com")
+        assertThat(createdUser!!.name).isEqualTo("name")
+        assertThat(createdUser!!.password).isEqualTo("booster")
         verify(userRepository).save(any(User::class.java))
     }
 
@@ -120,5 +123,4 @@ class UserServiceImplTest {
         assertThat(findUser.name).isEqualTo("name")
         assertThat(findUser.password).isEqualTo("password")
     }
-
 }

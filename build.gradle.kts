@@ -51,9 +51,11 @@ dependencies {
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
-    implementation("com.h2database:h2")
+    testImplementation("com.h2database:h2")
     testImplementation("junit:junit:4.13.1")
+    testImplementation("org.springframework.security:spring-security-test:6.1.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
 }
 
 tasks.withType<KotlinCompile> {

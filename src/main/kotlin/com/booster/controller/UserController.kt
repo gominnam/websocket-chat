@@ -40,7 +40,6 @@ class UserController @Autowired constructor(
                     .build()
             }
         }
-
         val authResponse = AuthResponse(tokenService.createToken(userDTO))
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
@@ -60,7 +59,6 @@ class UserController @Autowired constructor(
                 .message(e.message)
                 .build()
         }
-
         val authResponse = AuthResponse(tokenService.createToken(userDTO))
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)

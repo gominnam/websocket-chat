@@ -5,7 +5,6 @@ import com.booster.entity.User
 import com.booster.exception.ErrorCode
 import com.booster.exception.UserException
 import com.booster.repositories.UserRepository
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Service
 
@@ -14,8 +13,6 @@ class UserServiceImpl (
     val userRepository: UserRepository,
     val modelMapper: ModelMapper
 ): UserService {
-    private val logger = KotlinLogging.logger {}
-
     override fun createUser(userDTO: UserDTO?): UserDTO? {
         var user = modelMapper.map(userDTO, User::class.java)
         if(userRepository.existsByEmail(user.email)) {
@@ -38,5 +35,4 @@ class UserServiceImpl (
     }
 
     override fun deleteById(id: Long) = userRepository.deleteById(id)
-
 }
