@@ -8,6 +8,7 @@ import com.booster.payload.response.UserResponse
 import com.booster.services.TokenService
 import com.booster.services.UserService
 import com.booster.util.ApiResponse
+import com.booster.util.HttpStatus
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -127,15 +128,9 @@ class UserControllerTest {
     fun `It should get user when request with given id`(){
         val userDTO = UserDTO(null, "email", "name", null)
         val userResponse = UserResponse(null, "email", "name")
-        val apiResponse = ApiResponse.Builder<UserResponse>()
-            .status(200)
-            .message("find user")
-            .data(userResponse)
-            .build()
 
         given(userService.findById(1L)).willReturn(userDTO)
         given(modelMapper.map(userDTO, UserResponse::class.java)).willReturn(userResponse)
-        given(modelMapper.map(apiResponse, ApiResponse::class.java)).willReturn(apiResponse)
 
         //when
         var result = mockMvc.perform(get("/api/user/find/1"))

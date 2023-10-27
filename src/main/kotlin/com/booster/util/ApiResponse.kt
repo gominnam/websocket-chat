@@ -13,6 +13,6 @@ data class ApiResponse<T> (
         fun status(status: Int) = apply { this.status = status }
         fun message(message: String?) = apply { this.message = message}
         fun data(data: T?) = apply { this.data = data }
-        fun build() = ApiResponse(status ?: HttpStatus.INTERNAL_SERVER_ERROR, message, data)
+        fun build() = ApiResponse(status, message, data)
     }
 }
