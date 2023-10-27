@@ -43,7 +43,7 @@ class UserController @Autowired constructor(
         val authResponse = AuthResponse(tokenService.createToken(userDTO))
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
-            .message("user created")
+            .message("User created")
             .data(authResponse)
             .build()
     }
@@ -67,10 +67,23 @@ class UserController @Autowired constructor(
             .build()
     }
 
-    @PostMapping("/find/{id}")
-    fun findUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
-        val findUser = modelMapper.map(userService.findById(id), UserResponse::class.java)
-        return ResponseEntity.ok(findUser)
+    @GetMapping("/find/{id}")
+    fun findUser(@PathVariable id: Long): ApiResponse<UserResponse> {
+        var userDTO: UserDTO? = null
+        try{
+            userDTO = userService.findById(id)
+        } catch (e: UserException){
+            return ApiResponse.Builder<UserResponse>()
+                .status(e.getHttpStatus())
+                .message(e.message)
+                .build()
+        }
+        val userResponse = modelMapper.map(userDTO, UserResponse::class.java)
+        return ApiResponse.Builder<UserResponse>()
+            .status(HttpStatus.OK)
+            .message("find user")
+            .data(userResponse)
+            .build()
     }
 
     @PostMapping("/delete/{id}")

@@ -24,6 +24,7 @@ class UserServiceImpl (
 
     override fun findById(id: Long): UserDTO {
         var findUser = userRepository.findById(id)
+                                        .orElseThrow{ throw UserException(ErrorCode.USER_NOT_FOUND)}
         return modelMapper.map(findUser, UserDTO::class.java)
     }
 
