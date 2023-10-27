@@ -1,4 +1,4 @@
-package com.booster.services
+package com.booster.services.impl
 
 import com.booster.dto.UserDTO
 import com.booster.entity.User
@@ -70,8 +70,8 @@ class UserServiceImplTest {
         assertThat(createdUser).isNotNull()
         assertThat(createdUser).isInstanceOf(UserDTO::class.java)
         assertThat(createdUser!!.email).isEqualTo("booster@naver.com")
-        assertThat(createdUser!!.name).isEqualTo("name")
-        assertThat(createdUser!!.password).isEqualTo("booster")
+        assertThat(createdUser.name).isEqualTo("name")
+        assertThat(createdUser.password).isEqualTo("booster")
         verify(userRepository).save(any(User::class.java))
     }
 

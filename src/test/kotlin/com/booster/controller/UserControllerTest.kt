@@ -7,8 +7,6 @@ import com.booster.payload.request.UserRequest
 import com.booster.payload.response.UserResponse
 import com.booster.services.TokenService
 import com.booster.services.UserService
-import com.booster.util.ApiResponse
-import com.booster.util.HttpStatus
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -27,8 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-
-//@ExtendWith(SpringExtension::class)
 @RunWith(MockitoJUnitRunner::class)
 @WebMvcTest(UserController::class, excludeAutoConfiguration = [SecurityAutoConfiguration::class])
 class UserControllerTest {
