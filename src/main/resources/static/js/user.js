@@ -29,11 +29,26 @@ userSignInButton.addEventListener('click', () => {
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             Accept: 'application/json'
-        }
+        },
     }).then(response => response.json())
         .then(data => {
-            if(data.status === 200){
+            const token = data.data.accessToken;
+            if(data.status === 200 && token != null && token !== ""){
+                const headers = new Headers();
+                headers.append("Authorization", `Bearer ${token}`);
+
                 window.location.href = "/chat";
+                // fetch('/chat', {
+                //     method: 'GET',
+                //     headers: headers,
+                //     redirect: 'manual'
+                // }).then(response => {
+                //     if(response.redirected){
+                //         window.location.href = response.url;
+                //     }
+                // }).catch(error => {
+                //         console.error("bad request ", error);
+                //     });
             }else{
                 alert("Login failed");
             }
