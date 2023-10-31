@@ -37,7 +37,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.webjars:webjars-locator-core")
@@ -50,6 +49,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
+
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
     testImplementation("com.h2database:h2")
     testImplementation("junit:junit:4.13.1")
