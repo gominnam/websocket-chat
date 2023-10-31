@@ -225,6 +225,16 @@ input {
     width: 40px;
 }
 
+.fa-naver {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    background-image: url('../images/fa-naver.png');
+    background-size: cover;
+    vertical-align: middle;
+}
+
 footer {
     background-color: #222;
     color: #fff;
