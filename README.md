@@ -22,18 +22,21 @@
 
 ### Skills
 
+#### - backend
+* Kotlin
+* Spring Boot, Spring Security, WebSocket
+* JPA, Hibernate
+* Junit5, Mockito
+* Gradle, Maven
+* Intellij IDEA
+
+#### - devops
+* Mysql, H2
+
+
+#### - frontend
 * Spring MVC
 * WebSocket
-* ORM(Hibernate)
-* MySQL
-
-
-
-### Languages
-
-* Kotlin
-* javascript
-* HTML
 
 
 
