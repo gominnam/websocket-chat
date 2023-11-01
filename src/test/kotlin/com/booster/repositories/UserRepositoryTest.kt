@@ -1,6 +1,7 @@
 package com.booster.repositories
 
 import com.booster.entity.User
+import com.booster.model.Role
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -21,7 +22,7 @@ class UserRepositoryTest {
     @Test
     fun `it should find user by email and password`() {
         //given
-        val user = User(null, "email", "", "password")
+        val user = User(null, "email", "", "password", Role.ROLE_USER)
         testEntityManager.persistAndFlush(user)
 
         //when

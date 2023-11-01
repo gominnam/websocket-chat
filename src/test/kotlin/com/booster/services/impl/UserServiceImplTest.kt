@@ -4,6 +4,7 @@ import com.booster.dto.UserDTO
 import com.booster.entity.User
 import com.booster.exception.ErrorCode
 import com.booster.exception.UserException
+import com.booster.model.Role
 import com.booster.repositories.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
@@ -41,7 +42,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should throw user already exists with given email`() {
-        val user = User(1L, email="booster@naver.com", name="name", password="booster")
+        val user = User(1L, email="booster@naver.com", name="name", password="booster", Role.ROLE_USER)
         val userDTO = UserDTO(null, email="booster@naver.com", name="name", password="booster")
 
         given(userRepository.existsByEmail(user.email)).willReturn(true)
@@ -58,7 +59,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should create user with given email and name and password`(){
-        val savedUser = User(1L, email="booster@naver.com", name="name", password="booster")
+        val savedUser = User(1L, email="booster@naver.com", name="name", password="booster", Role.ROLE_USER)
 
         given(userRepository.save(any(User::class.java))).willReturn(savedUser)
 
@@ -91,7 +92,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should get user with given email and password`(){
-        val user = User(1L, email="email", name="name", password="password")
+        val user = User(1L, email="email", name="name", password="password", Role.ROLE_USER)
 
         given(userRepository.login("email", "password")).willReturn(Optional.of(user))
 
@@ -109,7 +110,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should get user with given id`(){
-        val user = User(1L, email="email", name="name", password="password")
+        val user = User(1L, email="email", name="name", password="password", Role.ROLE_USER)
 
         given(userRepository.findById(1L)).willReturn(Optional.of(user))
 
