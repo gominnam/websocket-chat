@@ -2,7 +2,7 @@ package com.booster.controller
 
 import com.booster.config.toUser
 import com.booster.dto.UserDTO
-import com.booster.exception.ErrorCode
+import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.AuthResponse
@@ -14,7 +14,6 @@ import com.booster.util.HttpStatus
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 

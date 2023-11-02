@@ -2,9 +2,9 @@ package com.booster.services.impl
 
 import com.booster.dto.UserDTO
 import com.booster.entity.User
-import com.booster.exception.ErrorCode
+import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
-import com.booster.model.Role
+import com.booster.enums.Role
 import com.booster.repositories.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable

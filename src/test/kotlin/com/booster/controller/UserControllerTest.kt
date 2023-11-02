@@ -1,7 +1,7 @@
 package com.booster.controller
 
 import com.booster.dto.UserDTO
-import com.booster.exception.ErrorCode
+import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.UserResponse

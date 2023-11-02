@@ -1,7 +1,7 @@
 package com.booster.repositories
 
 import com.booster.entity.User
-import com.booster.model.Role
+import com.booster.enums.Role
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith

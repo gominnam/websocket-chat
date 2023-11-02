@@ -13,10 +13,10 @@ abstract class AuditLog {
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
-    private val createdAt: Date? = null
+    private var createdAt: Date? = null
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = true)
-    private val updatedAt: Date? = null
+    private var updatedAt: Date? = null
 }

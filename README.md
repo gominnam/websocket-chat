@@ -45,3 +45,4 @@
 * [Github WebSocket Reference](https://github.com/dailycodebuffer/Spring-MVC-Tutorials/blob/master/spring-websocket)
 * https://codepen.io/
 * [JWT Reference](https://github.com/Tienisto/spring-boot-kotlin/tree/master/rest-jwt-jpa)
+* [Spring Security Reference](https://github.com/thombergs/code-examples/tree/master/spring-security/getting-started)

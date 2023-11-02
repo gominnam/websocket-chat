@@ -2,7 +2,7 @@ package com.booster.services.impl
 
 import com.booster.dto.UserDTO
 import com.booster.entity.User
-import com.booster.exception.ErrorCode
+import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
 import com.booster.repositories.UserRepository
 import com.booster.services.UserService
