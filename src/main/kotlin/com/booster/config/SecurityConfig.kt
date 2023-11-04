@@ -1,68 +1,140 @@
 package com.booster.config
 
+import com.booster.config.oauth.handler.OAuth2FailureHandler
+import com.booster.config.oauth.handler.OAuth2SuccessHandler
+import com.booster.config.jwt.JwtService
+import com.booster.repositories.UserRepository
 import com.booster.services.LoginService
-import com.booster.services.TokenService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.HttpSecurity.RequestMatcherConfigurer
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.web.servlet.config.annotation.CorsRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.security.web.authentication.logout.LogoutFilter
 
 
+/**
+ * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리
+ * JwtAuthenticationProcessingFilter는 AccessToken, RefreshToken 재발급
+ */
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(
-    private val tokenService: TokenService,
-) {
+class SecurityConfig {
+    private val loginService: LoginService? = null
+    private val jwtService: JwtService? = null
+    private val userRepository: UserRepository? = null
+    private val objectMapper: ObjectMapper? = null
+    private val oAuth2SuccessHandler: OAuth2SuccessHandler? = null
+    private val oAuth2FailureHandler: OAuth2FailureHandler? = null
+    private val customOAuth2UserService: CustomOAuth2UserService? = null
     @Bean
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        // Define public and private routes
-        http.securityMatchers{ matchers: RequestMatcherConfigurer ->
-                matchers.requestMatchers(
-                    AntPathRequestMatcher("/api/user/register"),
-                    AntPathRequestMatcher("/api/user/login"),
-                    AntPathRequestMatcher("/api/**"),
-                )
-        }
 
-        // Configure JWT
-        http.authenticationManager { auth ->
-            val jwt = auth as BearerTokenAuthenticationToken
-            val user = tokenService.parseToken(jwt.token) ?: throw InvalidBearerTokenException("Invalid token")
-            UsernamePasswordAuthenticationToken(user, "", listOf(SimpleGrantedAuthority("USER")))
-        }
+//        http.authorizeRequests().requestMatchers("/**").hasRole("USER").and().formLogin();
 
-        // Other configuration
-        http.cors()
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        http.csrf().disable()
-        http.headers().frameOptions().disable()
-        http.headers().xssProtection().disable()
+        http
+            .formLogin().disable() // FormLogin 사용 X
+            .httpBasic().disable() // httpBasic 사용 X
+            .csrf().disable() // csrf 보안 사용 X
+            .headers().frameOptions().disable()
+            .and() // 세션 사용하지 않으므로 STATELESS로 설정
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and() //== URL별 권한 관리 옵션 ==//
+            .authorizeRequests() // 아이콘, css, js 관련
+            // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
+            .antMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
+            .antMatchers("/sign-up").permitAll() // 회원가입 접근 가능
+            .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+            .and() //== 소셜 로그인 설정 ==//
+            .oauth2Login()
+            .successHandler(oAuth2LoginSuccessHandler) // 동의하고 계속하기를 눌렀을 때 Handler 설정
+            .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
+            .userInfoEndpoint().userService(customOAuth2UserService) // customUserService 설정
 
+        // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
+        // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
+        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter::class.java)
+        http.addFilterBefore(
+            jwtAuthenticationProcessingFilter(),
+            CustomJsonUsernamePasswordAuthenticationFilter::class.java
+        )
         return http.build()
     }
 
     @Bean
-    fun corsConfigurer(): WebMvcConfigurer {
-        return object : WebMvcConfigurer {
-            override fun addCorsMappings(registry: CorsRegistry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000")
-            }
-        }
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withDefaultPasswordEncoder()
+            .username("user")
+            .password("password")
+            .roles("USER")
+            .build()
+        return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    }
+
+    /**
+     * AuthenticationManager 설정 후 등록
+     * PasswordEncoder를 사용하는 AuthenticationProvider 지정 (PasswordEncoder는 위에서 등록한 PasswordEncoder 사용)
+     * FormLogin(기존 스프링 시큐리티 로그인)과 동일하게 DaoAuthenticationProvider 사용
+     * UserDetailsService는 커스텀 LoginService로 등록
+     * 또한, FormLogin과 동일하게 AuthenticationManager로는 구현체인 ProviderManager 사용(return ProviderManager)
+     *
+     */
+    @Bean
+    fun authenticationManager(): AuthenticationManager {
+        val provider = DaoAuthenticationProvider()
+        provider.setPasswordEncoder(passwordEncoder())
+        provider.setUserDetailsService(loginService)
+        return ProviderManager(provider)
+    }
+
+    /**
+     * 로그인 성공 시 호출되는 LoginSuccessJWTProviderHandler 빈 등록
+     */
+    @Bean
+    fun loginSuccessHandler(): LoginSuccessHandler {
+        return LoginSuccessHandler(jwtService, userRepository)
+    }
+
+    /**
+     * 로그인 실패 시 호출되는 LoginFailureHandler 빈 등록
+     */
+    @Bean
+    fun loginFailureHandler(): LoginFailureHandler {
+        return LoginFailureHandler()
+    }
+
+    /**
+     * CustomJsonUsernamePasswordAuthenticationFilter 빈 등록
+     * 커스텀 필터를 사용하기 위해 만든 커스텀 필터를 Bean으로 등록
+     * setAuthenticationManager(authenticationManager())로 위에서 등록한 AuthenticationManager(ProviderManager) 설정
+     * 로그인 성공 시 호출할 handler, 실패 시 호출할 handler로 위에서 등록한 handler 설정
+     */
+    @Bean
+    fun customJsonUsernamePasswordAuthenticationFilter(): CustomJsonUsernamePasswordAuthenticationFilter {
+        val customJsonUsernamePasswordLoginFilter = CustomJsonUsernamePasswordAuthenticationFilter(objectMapper)
+        customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager())
+        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler())
+        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler())
+        return customJsonUsernamePasswordLoginFilter
+    }
+
+    @Bean
+    fun jwtAuthenticationProcessingFilter(): JwtAuthenticationProcessingFilter {
+        return JwtAuthenticationProcessingFilter(jwtService, userRepository)
     }
 }

@@ -1,4 +1,4 @@
-package com.booster.config
+package com.booster.config.websocket
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry

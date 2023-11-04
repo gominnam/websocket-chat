@@ -21,20 +21,22 @@ data class User (
     var name: String,
     @Length(min = 7, max = 15)
     var password: String,
+    var imageUrl: String?,
     @Enumerated(EnumType.STRING)
     var role: Role,
     @Enumerated(EnumType.STRING)
-    var socialType: SocialType?, // KAKAO, NAVER, GOOGLE
-    var socialId: String?, // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+    var socialType: SocialType?,
+    var socialId: String?,
     var refreshToken: String,
 ) : AuditLog() {
-    constructor() : this(null, "", "", "", Role.ROLE_USER, null, null, "")
+    constructor() : this(null, "", "", "", "", Role.ROLE_USER, null, null, "")
 
     class Builder{
         private var id: Long? = null
         private var email: String = ""
         private var name: String = ""
         private var password: String = ""
+        private var imageUrl: String = ""
         private var role: Role = Role.ROLE_USER
         private var socialType: SocialType? = null
         private var socialId: String? = null
@@ -44,10 +46,11 @@ data class User (
         fun email(email: String) = apply { this.email = email }
         fun name(name: String) = apply { this.name = name }
         fun password(password: String) = apply { this.password = password }
+        fun imageUrl(imageUrl: String) = apply { this.imageUrl = imageUrl }
         fun role(role: Role) = apply { this.role = role }
         fun socialType(socialType: SocialType?) = apply { this.socialType = socialType }
         fun socialId(socialId: String?) = apply { this.socialId = socialId }
         fun refreshToken(refreshToken: String) = apply { this.refreshToken = refreshToken }
-        fun build() = User(id, email, name, password, role, socialType, socialId, refreshToken)
+        fun build() = User(id, email, name, password, imageUrl, role, socialType, socialId, refreshToken)
     }
 }

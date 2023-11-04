@@ -1,4 +1,4 @@
-package com.booster.config
+package com.booster.config.jwt
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret
 import com.nimbusds.jose.proc.SecurityContext
