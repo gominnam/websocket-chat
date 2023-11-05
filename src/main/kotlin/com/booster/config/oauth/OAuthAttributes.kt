@@ -1,5 +1,8 @@
 package com.booster.config.oauth
 
+import com.booster.config.oauth.user.GoogleUser
+import com.booster.config.oauth.user.KakaoUser
+import com.booster.config.oauth.user.NaverUser
 import com.booster.config.oauth.user.OAuth2UserInfo
 import com.booster.entity.User
 import com.booster.enums.Role
@@ -7,14 +10,15 @@ import com.booster.enums.SocialType
 import java.util.*
 
 
-class OAuthAttributes constructor(// OAuth2 로그인 진행 시 키가 되는 필드 값, PK와 같은 의미
-    private val nameAttributeKey: String, oauth2UserInfo: OAuth2UserInfo
+class OAuthAttributes(
+    nameAttributeKey: String, oauth2UserInfo: OAuth2UserInfo
 ) {
-    private val oauth2UserInfo // 소셜 타입별 로그인 유저 정보(닉네임, 이메일, 프로필 사진 등등)
-            : OAuth2UserInfo
+    val oauth2UserInfo: OAuth2UserInfo
+    val nameAttributeKey: String
 
     init {
         this.oauth2UserInfo = oauth2UserInfo
+        this.nameAttributeKey = nameAttributeKey
     }
 
     fun toEntity(socialType: SocialType?, oauth2UserInfo: OAuth2UserInfo): User {
@@ -24,17 +28,11 @@ class OAuthAttributes constructor(// OAuth2 로그인 진행 시 키가 되는 �
             .email(UUID.randomUUID().toString()+"@socialUser.com")
             .name(oauth2UserInfo.nickname!!)
             .imageUrl(oauth2UserInfo.imageUrl!!)
-            .role(Role.ROLE_USER)
+            .role(Role.ROLE_GUEST)
             .build()
     }
 
     companion object {
-        /**
-         * SocialType에 맞는 메소드 호출하여 OAuthAttributes 객체 반환
-         * 파라미터 : userNameAttributeName -> OAuth2 로그인 시 키(PK)가 되는 값 / attributes : OAuth 서비스의 유저 정보들
-         * 소셜별 of 메소드(ofGoogle, ofKaKao, ofNaver)들은 각각 소셜 로그인 API에서 제공하는
-         * 회원의 식별값(id), attributes, nameAttributeKey를 저장 후 build
-         */
         fun of(
             socialType: SocialType,
             userNameAttributeName: String?, attributes: Map<String?, Any?>?
@@ -48,21 +46,15 @@ class OAuthAttributes constructor(// OAuth2 로그인 진행 시 키가 되는 �
         }
 
         private fun ofKakao(userNameAttributeName: String?, attributes: Map<String?, Any?>?): OAuthAttributes {
-            return builder()
-                .nameAttributeKey(userNameAttributeName)
-                .oauth2UserInfo(KakaoOAuth2UserInfo(attributes))
-                .build()
+            return OAuthAttributes(userNameAttributeName!!, KakaoUser(attributes))
         }
 
         fun ofGoogle(userNameAttributeName: String?, attributes: Map<String?, Any?>?): OAuthAttributes {
-            return builder()
-                .nameAttributeKey(userNameAttributeName)
-                .oauth2UserInfo(GoogleOAuth2UserInfo(attributes))
-                .build()
+            return OAuthAttributes(userNameAttributeName!!, GoogleUser(attributes))
         }
 
         fun ofNaver(userNameAttributeName: String?, attributes: Map<String?, Any?>?): OAuthAttributes {
-            return OAuthAttributes(userNameAttributeName, NaverOAuth2UserInfo(attributes))
+            return OAuthAttributes(userNameAttributeName!!, NaverUser(attributes))
         }
     }
 }

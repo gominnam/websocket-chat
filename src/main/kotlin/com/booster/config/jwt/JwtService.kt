@@ -24,10 +24,10 @@ class JwtService {
     private val refreshTokenExpirationTime: Long? = null
 
     @Value("\${jwt.access.header}")
-    private val accessHeader: String? = null
+    val accessHeader: String? = null
 
     @Value("\${jwt.refresh.header}")
-    private val refreshHeader: String? = null
+    val refreshHeader: String? = null
 
     private val userRepository: UserRepository? = null
 

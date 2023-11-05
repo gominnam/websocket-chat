@@ -22,7 +22,7 @@ class UserRepositoryTest {
     @Test
     fun `it should find user by email and password`() {
         //given
-        val user = User(null, "email", "", "password", Role.ROLE_USER)
+        val user = User(null, "email", "", "password", "", Role.ROLE_USER, null, "", "")
         testEntityManager.persistAndFlush(user)
 
         //when

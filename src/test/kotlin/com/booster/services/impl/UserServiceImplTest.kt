@@ -42,7 +42,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should throw user already exists with given email`() {
-        val user = User(1L, email="booster@naver.com", name="name", password="booster", Role.ROLE_USER)
+        val user = User(1L, email="booster@naver.com", name="name", password="booster", "", Role.ROLE_USER, null, "", "")
         val userDTO = UserDTO(null, email="booster@naver.com", name="name", password="booster")
 
         given(userRepository.existsByEmail(user.email)).willReturn(true)
@@ -59,8 +59,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should create user with given email and name and password`(){
-        val savedUser = User(1L, email="booster@naver.com", name="name", password="booster", Role.ROLE_USER)
-
+        val savedUser = User(1L, email="booster@naver.com", name="name", password="booster", "", Role.ROLE_USER, null, "", "")
         given(userRepository.save(any(User::class.java))).willReturn(savedUser)
 
         //when
@@ -92,7 +91,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should get user with given email and password`(){
-        val user = User(1L, email="email", name="name", password="password", Role.ROLE_USER)
+        val user = User(1L, email="email", name="name", password="password", "", Role.ROLE_USER, null, "", "")
 
         given(userRepository.login("email", "password")).willReturn(Optional.of(user))
 
@@ -110,7 +109,7 @@ class UserServiceImplTest {
 
     @Test
     fun `it should get user with given id`(){
-        val user = User(1L, email="email", name="name", password="password", Role.ROLE_USER)
+        val user = User(1L, email="email", name="name", password="password", "", Role.ROLE_USER, null, "", "")
 
         given(userRepository.findById(1L)).willReturn(Optional.of(user))
 

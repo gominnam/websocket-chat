@@ -1,6 +1,7 @@
 package com.booster.repositories
 
 import com.booster.entity.User
+import com.booster.enums.SocialType
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.util.*
@@ -12,4 +13,5 @@ interface UserRepository: JpaRepository<User, Long> {
     fun findByEmail(email: String): Optional<User>
     fun existsByEmail(email: String): Boolean
     fun findByRefreshToken(refreshToken: String?): Optional<User>
+    fun findBySocialTypeAndSocialId(socialType: SocialType, socialId: String): Optional<User>
 }

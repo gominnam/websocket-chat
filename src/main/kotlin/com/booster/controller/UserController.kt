@@ -1,20 +1,17 @@
 package com.booster.controller
 
-import com.booster.config.toUser
 import com.booster.dto.UserDTO
 import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.AuthResponse
 import com.booster.payload.response.UserResponse
-import com.booster.services.TokenService
 import com.booster.services.UserService
 import com.booster.util.ApiResponse
 import com.booster.util.HttpStatus
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.*
 class UserController @Autowired constructor(
         private val userService: UserService,
         private val modelMapper: ModelMapper,
-        private val tokenService: TokenService,
 ) {
     val logger = KotlinLogging.logger {}
 
@@ -39,11 +35,11 @@ class UserController @Autowired constructor(
                     .build()
             }
         }
-        val authResponse = AuthResponse(tokenService.createToken(userDTO))
+//        val authResponse = AuthResponse(tokenService.createToken(userDTO))
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
             .message("User created")
-            .data(authResponse)
+//            .data(authResponse)
             .build()
     }
 
@@ -58,11 +54,11 @@ class UserController @Autowired constructor(
                 .message(e.message)
                 .build()
         }
-        val authResponse = AuthResponse(tokenService.createToken(userDTO))
+//        val authResponse = AuthResponse(tokenService.createToken(userDTO))
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
             .message("welcome in booster world")
-            .data(authResponse)
+//            .data(authResponse)
             .build()
     }
 

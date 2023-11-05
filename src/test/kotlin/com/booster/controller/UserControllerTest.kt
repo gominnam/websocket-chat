@@ -5,7 +5,6 @@ import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
 import com.booster.payload.request.UserRequest
 import com.booster.payload.response.UserResponse
-import com.booster.services.TokenService
 import com.booster.services.UserService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -36,8 +35,6 @@ class UserControllerTest {
     private lateinit var userService: UserService
     @MockBean
     private lateinit var modelMapper: ModelMapper
-    @MockBean
-    private lateinit var tokenService: TokenService
 
     @Test
     @WithMockUser(username = "booster", password = "booster", roles = ["USER"])
@@ -47,7 +44,7 @@ class UserControllerTest {
 
         given(modelMapper.map(request, UserDTO::class.java)).willReturn(userDTO)
         given(userService.login(userDTO)).willReturn(userDTO)
-        given(tokenService.createToken(userDTO)).willReturn("access_token")
+//        given(tokenService.createToken(userDTO)).willReturn("access_token")
 
         //when
         val result = mockMvc.perform(post("/api/user/login")
@@ -106,7 +103,7 @@ class UserControllerTest {
 
         given(modelMapper.map(requestDTO, UserDTO::class.java)).willReturn(userDTO)
         given(userService.createUser(userDTO)).willReturn(userDTO)
-        given(tokenService.createToken(userDTO)).willReturn("access_token")
+//        given(tokenService.createToken(userDTO)).willReturn("access_token")
 
         //when
         val result = mockMvc.perform(post("/api/user/register")
