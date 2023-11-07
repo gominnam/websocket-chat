@@ -21,6 +21,6 @@ class LoginFailureHandler : SimpleUrlAuthenticationFailureHandler() {
         response.characterEncoding = "UTF-8"
         response.contentType = "text/plain;charset=UTF-8"
         response.writer.write("login fail. confirm your email or password")
-        log.info { "${"login fail. {}"} ${exception.message}" }
+        log.info { "${"login fail. "} ${exception.message}" }
     }
 }

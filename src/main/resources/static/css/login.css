@@ -226,11 +226,13 @@ input {
 }
 
 .fa-naver {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
     background-image: url('../images/fa-naver.png');
+    background-size: cover;
+    vertical-align: middle;
+}
+
+.fa-kakao {
+    background-image: url('../images/fa-kakao.png');
     background-size: cover;
     vertical-align: middle;
 }

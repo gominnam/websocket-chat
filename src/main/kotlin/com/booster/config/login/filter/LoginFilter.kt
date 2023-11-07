@@ -18,7 +18,7 @@ class LoginFilter(private val objectMapper: ObjectMapper) :
     AbstractAuthenticationProcessingFilter(DEFAULT_LOGIN_PATH_REQUEST_MATCHER) {
 
     companion object {
-        private const val DEFAULT_LOGIN_REQUEST_URL = "api/user/login"
+        private const val DEFAULT_LOGIN_REQUEST_URL = "/api/user/login"
         private const val HTTP_METHOD = "POST"
         private const val CONTENT_TYPE = "application/json"
         private const val USERNAME_KEY = "email"
