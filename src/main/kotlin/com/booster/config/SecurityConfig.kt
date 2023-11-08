@@ -11,6 +11,7 @@ import com.booster.config.oauth.handler.OAuth2FailureHandler
 import com.booster.config.oauth.handler.OAuth2SuccessHandler
 import com.booster.repositories.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -18,6 +19,7 @@ import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -34,6 +36,19 @@ class SecurityConfig(val userRepository: UserRepository, val jwtService: JwtServ
     private val objectMapper: ObjectMapper = ObjectMapper()
 
     @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web ->
+            web.ignoring().requestMatchers(
+                "/",
+                "/css/**",
+                "/images/**",
+                "/js/**",
+                "/api/user/register",
+            )
+        }
+    }
+
+    @Bean
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
@@ -42,13 +57,14 @@ class SecurityConfig(val userRepository: UserRepository, val jwtService: JwtServ
             .csrf { csrf -> csrf.disable() }
             .headers { headers ->  headers.frameOptions().disable() }
             .sessionManagement { sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeRequests { authorizeRequests ->
+
+            .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/api/user/register")
-                    .permitAll()
+                    .requestMatchers("/api/user/login").permitAll()
                     .anyRequest()
                     .authenticated()
             }
+
             .oauth2Login { oauth2Login ->
                 oauth2Login
                     .successHandler(oAuth2SuccessHandler)

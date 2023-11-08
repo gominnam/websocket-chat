@@ -7,18 +7,22 @@ import com.booster.exception.UserException
 import com.booster.repositories.UserRepository
 import com.booster.services.UserService
 import org.modelmapper.ModelMapper
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class UserServiceImpl (
     val userRepository: UserRepository,
-    val modelMapper: ModelMapper
+    val modelMapper: ModelMapper,
+    val passwordEncoder: PasswordEncoder
 ): UserService {
+
     override fun createUser(userDTO: UserDTO?): UserDTO? {
         var user = modelMapper.map(userDTO, User::class.java)
         if(userRepository.existsByEmail(user.email)) {
             throw UserException(ErrorCode.USER_ALREADY_EXISTS)
         }
+        user.password = passwordEncoder.encode(user.password)
         var savedUser = userRepository.save(user)
         return modelMapper.map(savedUser, UserDTO::class.java)
     }

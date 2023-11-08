@@ -19,7 +19,7 @@ class LoginService(val userRepository: UserRepository) : UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
             .username(user.email)
             .password(user.password)
-            .roles(user.role.name)
+            .roles(user.role.toString().substring("ROLE_".length))
             .build()
     }
 }

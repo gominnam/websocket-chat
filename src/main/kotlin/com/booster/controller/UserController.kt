@@ -1,5 +1,6 @@
 package com.booster.controller
 
+import com.booster.config.jwt.JwtService
 import com.booster.dto.UserDTO
 import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
@@ -19,8 +20,9 @@ import org.springframework.web.bind.annotation.*
 class UserController @Autowired constructor(
         private val userService: UserService,
         private val modelMapper: ModelMapper,
+        private val jwtService: JwtService
 ) {
-    val logger = KotlinLogging.logger {}
+    val log = KotlinLogging.logger {}
 
     @PostMapping("/register")
     fun saveUser(@RequestBody request: UserRequest): ApiResponse<AuthResponse>? {
@@ -35,11 +37,13 @@ class UserController @Autowired constructor(
                     .build()
             }
         }
-//        val authResponse = AuthResponse(tokenService.createToken(userDTO))
+        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email!!)
+        log.info{"accessToken : $accessToken, refreshToken : $refreshToken"}
+
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
             .message("User created")
-//            .data(authResponse)
+            .data(AuthResponse(accessToken, refreshToken))
             .build()
     }
 

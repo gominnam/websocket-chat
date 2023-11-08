@@ -33,6 +33,7 @@ class JwtAuthFilter(private val jwtService: JwtService?, private val userReposit
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        log.info { "JwtAuthFilter.doFilterInternal()" }
         if (request.requestURI.equals(NO_CHECK_URL)) {
             filterChain.doFilter(request, response)
             return

@@ -125,4 +125,10 @@ class JwtService {
             false
         }
     }
+
+    fun issueTokens(email: String): Pair<String, String> {
+        val accessToken = createAccessToken(email)
+        val refreshToken = createRefreshToken()
+        return Pair(accessToken, refreshToken)
+    }
 }
