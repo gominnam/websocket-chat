@@ -11,7 +11,6 @@ import com.booster.config.oauth.handler.OAuth2FailureHandler
 import com.booster.config.oauth.handler.OAuth2SuccessHandler
 import com.booster.repositories.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager

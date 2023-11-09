@@ -27,35 +27,21 @@ userSignInButton.addEventListener('click', () => {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
+            'Content-Type': 'application/json'
         },
-    }).then(response => response.json())
-        .then(data => {
-            const token = data.data.accessToken;
-            if(data.status === 200 && token != null && token !== ""){
-                const headers = new Headers();
-                headers.append("Authorization", `Bearer ${token}`);
-
-                window.location.href = "/chat";
-                // fetch('/chat', {
-                //     method: 'GET',
-                //     headers: headers,
-                //     redirect: 'manual'
-                // }).then(response => {
-                //     if(response.redirected){
-                //         window.location.href = response.url;
-                //     }
-                // }).catch(error => {
-                //         console.error("bad request ", error);
-                //     });
-            }else{
-                alert("Login failed");
-            }
-        })
+    }).then(response => {
+        if(!response.ok){
+            throw new Error('Network response was not ok');
+        }
+        var accessToken  = response.headers.get('Authorization');
+        var refreshToken  = response.headers.get('Authorization-refresh');
+        const headers = new Headers();
+        headers.append("Authorization", `Bearer ${accessToken}`);
+        window.location.href = "/chat";
+    })
         .catch(error => {
-        console.error('Error:', error);
-    });
+            console.error('Error:', error);
+        });
 });
 
 userSingUpButton.addEventListener('click', () => {
