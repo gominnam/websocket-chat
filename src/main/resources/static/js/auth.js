@@ -7,10 +7,32 @@ function saveRefreshTokenToLocalStorage(refreshToken) {
     localStorage.setItem('refreshToken', refreshToken);
 }
 
-// 토큰을 가져와서 헤더에 추가하고 API 호출
-function ApiRequest(url, method) {
+function loginRequest(data) {
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    }).then(response => {
+        if(!response.ok){
+            throw new Error('Network response was not ok');
+        }
+        saveAccessTokenToLocalStorage(response.headers.get('Authorization'));
+        saveRefreshTokenToLocalStorage(response.headers.get('Authorization-refresh'));
+
+        return response.ok;
+    })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+//ex) apiRequest('/some/url', 'POST');
+function apiRequest(url, method) {
     const accessToken = localStorage.getItem('accessToken');
 
+    //todo: accessToken 만료시간 체킹하고 refreshToken으로 accessToken 재발급 받기
     if (!accessToken) {
         console.error('Access Token not found');
         return;
@@ -22,14 +44,17 @@ function ApiRequest(url, method) {
             'Content-Type': 'application/json',
             'accessHeader': accessToken
         },
+    }).then(response => {
+        if(!response.ok){
+            throw new Error('Network response was not ok');
+        }
+        saveAccessTokenToLocalStorage(response.headers.get('Authorization'));
+        saveRefreshTokenToLocalStorage(response.headers.get('Authorization-refresh'));
+
+        const headers = new Headers();
+        headers.append("Authorization", `Bearer ${accessToken}`);
+        window.location.href = "/chat";
     })
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            console.log('Server Data:', data);
-            // 다음 작업 수행
-        })
         .catch(error => {
             console.error('Error:', error);
         });

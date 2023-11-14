@@ -32,19 +32,20 @@ class LoginSuccessHandler(private val jwtService: JwtService?, private val userR
             response!!,
             accessToken,
             refreshToken
-        ) // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
+        )
         userRepository!!.findByEmail(email)
             .ifPresent { user: User ->
                 user.refreshToken = refreshToken
                 userRepository.saveAndFlush(user)
             }
-        log.info { "${"login success. email : {}"} $email" }
-        log.info { "${"accessToken : {}"} $accessToken" }
-        log.info { "${"accessToken expiration time : {}"} $accessTokenExpiration" }
+        log.info { "${"login success. email : "} $email" }
+        log.info { "${"accessToken : "} $accessToken" }
+        log.info { "${"accessToken expiration time : "} $accessTokenExpiration" }
     }
 
     private fun extractUsername(authentication: Authentication): String {
         val userDetails = authentication.principal as UserDetails
         return userDetails.username
     }
+
 }

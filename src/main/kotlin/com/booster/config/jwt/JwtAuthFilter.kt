@@ -96,7 +96,7 @@ class JwtAuthFilter(private val jwtService: JwtService?, private val userReposit
         val userDetailsUser = org.springframework.security.core.userdetails.User.builder()
             .username(user.email)
             .password(password)
-            .roles(user.role.name)
+            .roles(user.role.name.substring("ROLE_".length))
             .build()
         val authentication: Authentication = UsernamePasswordAuthenticationToken(
             userDetailsUser, null,

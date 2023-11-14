@@ -3,7 +3,7 @@ package com.booster.config
 import com.booster.config.jwt.JwtAuthFilter
 import com.booster.config.jwt.JwtService
 import com.booster.config.login.LoginService
-import com.booster.config.login.filter.LoginFilter
+import com.booster.config.login.filter.CustomJsonUsernamePasswordAuthenticationFilter
 import com.booster.config.login.handler.LoginFailureHandler
 import com.booster.config.login.handler.LoginSuccessHandler
 import com.booster.config.oauth.CustomOAuth2UserService
@@ -60,10 +60,10 @@ class SecurityConfig(val userRepository: UserRepository, val jwtService: JwtServ
             .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
                     .requestMatchers("/api/user/login").permitAll()
+                    .requestMatchers("/chat").hasRole("USER")
                     .anyRequest()
                     .authenticated()
             }
-
             .oauth2Login { oauth2Login ->
                 oauth2Login
                     .successHandler(oAuth2SuccessHandler)
@@ -71,11 +71,9 @@ class SecurityConfig(val userRepository: UserRepository, val jwtService: JwtServ
                     .userInfoEndpoint { userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService) }
             }
 
-        http.addFilterAfter(loginFilter(), LogoutFilter::class.java)
-        http.addFilterBefore(
-            jwtAuthFilter(),
-            LoginFilter::class.java
-        )
+        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter::class.java)
+        http.addFilterBefore(jwtAuthFilter(), CustomJsonUsernamePasswordAuthenticationFilter::class.java)
+
         return http.build()
     }
 
@@ -103,8 +101,8 @@ class SecurityConfig(val userRepository: UserRepository, val jwtService: JwtServ
     }
 
     @Bean
-    fun loginFilter(): LoginFilter {
-        val loginFilter = LoginFilter(objectMapper)
+    fun customJsonUsernamePasswordAuthenticationFilter(): CustomJsonUsernamePasswordAuthenticationFilter {
+        val loginFilter = CustomJsonUsernamePasswordAuthenticationFilter(objectMapper)
         loginFilter.setAuthenticationManager(authenticationManager())
         loginFilter.setAuthenticationSuccessHandler(loginSuccessHandler())
         loginFilter.setAuthenticationFailureHandler(loginFailureHandler())

@@ -14,7 +14,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 
-class LoginFilter(private val objectMapper: ObjectMapper) :
+class CustomJsonUsernamePasswordAuthenticationFilter(private val objectMapper: ObjectMapper) :
     AbstractAuthenticationProcessingFilter(DEFAULT_LOGIN_PATH_REQUEST_MATCHER) {
 
     companion object {

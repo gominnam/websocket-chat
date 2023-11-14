@@ -25,8 +25,8 @@ userSignInButton.addEventListener('click', () => {
 
     fetch('/api/user/login', {
         method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
+            body: JSON.stringify(data),
+            headers: {
             'Content-Type': 'application/json'
         },
     }).then(response => {
