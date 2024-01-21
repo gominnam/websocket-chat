@@ -8,6 +8,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -132,3 +133,13 @@ class JwtService {
         return Pair(accessToken, refreshToken)
     }
 }
+
+data class AuthContext(val user: User, val isAdmin: Boolean)
+fun Authentication.toUser(): User {
+    return (this.principal as AuthContext).user
+}
+/*
+* fun toUser(authentication: Authentication): User {
+*   return (authentication.principal as AuthContext).user
+* }
+*  */
