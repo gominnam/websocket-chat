@@ -29,7 +29,7 @@ jobs:
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_USER_NAME }}
-          key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           source: "./build/libs/websocket-chat.jar"
           target: "/web/server"
 
