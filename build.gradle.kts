@@ -74,6 +74,7 @@ tasks.withType<KotlinCompile> {
 
     val bootJar by tasks.getting(BootJar::class) {
         archiveBaseName.set("websocket-chat")
+        archiveVersion.set("")
     }
 }
 
