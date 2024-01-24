@@ -37,8 +37,9 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          username: ${{ secrets.AWS_USER_NAME }}
           key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          port: ${{ secrets.AWS_EC2_PORT }}
           script: |
             cd /web/server
             sudo systemctl restart websocket-chat
