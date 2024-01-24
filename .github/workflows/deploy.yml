@@ -28,7 +28,7 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          username: ${{ secrets.AWS_USER_NAME }}
           key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           source: "./build/libs/websocket-chat.jar"
           target: "/web/server"
