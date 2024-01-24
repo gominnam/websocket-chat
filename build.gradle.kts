@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "3.1.3"
@@ -69,6 +70,10 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
         jvmTarget = "17"
+    }
+
+    val bootJar by tasks.getting(BootJar::class) {
+        archiveBaseName.set("websocket-chat")
     }
 }
 

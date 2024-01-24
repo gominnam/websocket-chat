@@ -30,7 +30,7 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          source: "/web/server/websocket-chat.jar"
+          source: "/build/libs/websocket-chat.jar"
           target: "/web/server"
 
       - name: SSH into EC2 and restart application
