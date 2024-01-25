@@ -26,6 +26,8 @@ jobs:
       - name: Build Spring Boot application
         run: |
           ./gradlew clean build -x test
+          ls -l build/libs/
+          pwd
 
       # Jar 파일을 EC2 인스턴스로 복사
       - name: Copy JAR to EC2 instance
@@ -36,6 +38,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           source: "/github/workspace/build/libs/websocket-chat.jar"
           target: "/home/ec2-user/web/server"
+          debug: 'true'
 
       - name: SSH into EC2 and restart application
         uses: appleboy/ssh-action@master
