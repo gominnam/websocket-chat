@@ -48,4 +48,4 @@ jobs:
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
             cd /home/ec2-user/web/server/github/workspace/build/libs
-            sudo systemctl restart websocket-chat
+            java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar
