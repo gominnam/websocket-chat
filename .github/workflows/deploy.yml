@@ -47,5 +47,5 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
-            cd /home/ec2-user/web/server
+            cd /home/ec2-user/web/server/github/workspace/build/libs
             sudo systemctl restart websocket-chat
