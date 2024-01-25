@@ -36,7 +36,7 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_USER_NAME }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          source: "/home/runner/work/websocket-chat/build/libs/websocket-chat.jar"
+          source: "/github/workspace/build/libs/websocket-chat.jar"
           target: "/home/ec2-user/web/server"
           debug: 'true'
 
