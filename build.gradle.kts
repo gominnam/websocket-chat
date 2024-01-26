@@ -51,6 +51,8 @@ dependencies {
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
+    implementation("org.flywaydb:flyway-core:8.4.1")
+
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.security:spring-security-crypto")
