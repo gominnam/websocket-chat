@@ -57,7 +57,7 @@ jobs:
             sudo systemctl stop mysqld
             sudo systemctl start mysqld
             sudo systemctl status mysqld
-            mysql -u${{ secrets.DB_ID }} -p${{ secrets.DB_PASSWORD }}
+            mysql -u${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }}
 
       - name: SSH into EC2 and restart application
         uses: appleboy/ssh-action@master
