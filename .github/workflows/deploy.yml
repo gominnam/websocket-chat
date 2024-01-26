@@ -67,6 +67,13 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
+            if [ ! -f .env ]; then
+              echo "AWS_EC2_HOST_IP=${AWS_EC2_HOST_IP}" >> .env
+              echo "DB_USERNAME=${DB_USERNAME}" >> .env
+              echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+              echo "SECRET_KEY=${SECRET_KEY}" >> .env
+            fi
+            
             cd /home/ec2-user/web/server/github/workspace/build/libs
             java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod
 
