@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+      AWS_EC2_HOST_IP: ${{ secrets.AWS_EC2_HOST_IP }}
       DB_USERNAME: ${{ secrets.DB_ID }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
