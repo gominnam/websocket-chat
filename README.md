@@ -12,12 +12,20 @@
 
 - User
 
-  | Column   | Type   | Description |
-  |----------|--------| ----------- |
-  | id       | Long   |             |
-  | name     | String |             |
-  | email    | String |             |
-  | password | String |             |
+  | Column        | Type     | Description   |
+  |---------------|----------|---------------|
+  | id            | Long     |               |
+  | name          | String   | 이름            |
+  | email         | String   | 이메일           |
+  | password      | String   | 비밀번호          |
+  | created_at    | datetime | 생성일자          |
+  | updated_at    | datetime | 수정일자          |
+  | role          | String   | 권한            |
+  | image_url     | String   | 프로필이미지        |
+  | refresh_token | String   | Oauth 리프레쉬 토큰  |
+  | social_id     | String   | Oauth 로그인 아이디 |
+  | social_type   | String   | Oauth 로그인 사이트 |
+
 
 
 ### Skills
@@ -25,13 +33,13 @@
 #### - backend
 * Kotlin
 * Spring Boot, Spring Security, WebSocket
-* JPA, Hibernate
+* JPA, Hibernate, flyway
 * Junit5, Mockito
-* Gradle, Maven
+* Gradle
 * Intellij IDEA
 
 #### - devops
-* Mysql, H2
+* Mysql, H2, AWS EC2
 
 
 #### - frontend
