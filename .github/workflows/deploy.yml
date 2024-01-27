@@ -52,3 +52,4 @@ jobs:
             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             nohup java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod &
+            disown
