@@ -39,19 +39,6 @@ jobs:
           source: "/github/workspace/build/libs/websocket-chat.jar"
           target: "/home/ec2-user/web/server"
 
-      # MySQL 실행 및 사용자 로그인
-      - name: MySQL login
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_USER_NAME }}
-          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.AWS_EC2_PORT }}
-          script: |
-            sudo systemctl stop mysqld
-            sudo systemctl start mysqld
-            sudo systemctl status mysqld
-
       - name: SSH into EC2 and restart application
         uses: appleboy/ssh-action@master
         with:
@@ -65,4 +52,3 @@ jobs:
             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod
-
