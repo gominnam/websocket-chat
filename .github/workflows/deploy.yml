@@ -9,12 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    env:
-      AWS_EC2_HOST_IP: ${{ secrets.AWS_EC2_HOST_IP }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -27,7 +21,7 @@ jobs:
 
       - name: Print current directory
         run: |
-          pwd    
+          pwd
 
       - name: Build Spring Boot application
         run: |
@@ -57,7 +51,6 @@ jobs:
             sudo systemctl stop mysqld
             sudo systemctl start mysqld
             sudo systemctl status mysqld
-            mysql -u${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }}
 
       - name: SSH into EC2 and restart application
         uses: appleboy/ssh-action@master
@@ -67,13 +60,9 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
-            if [ ! -f .env ]; then
-              echo "AWS_EC2_HOST_IP=${AWS_EC2_HOST_IP}" >> .env
-              echo "DB_USERNAME=${DB_USERNAME}" >> .env
-              echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
-              echo "SECRET_KEY=${SECRET_KEY}" >> .env
-            fi
-            
             cd /home/ec2-user/web/server/github/workspace/build/libs
+            export SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export JWT_SECRET_KEY=${{ secrets.SECRET_KEY }}
+            export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod
 
