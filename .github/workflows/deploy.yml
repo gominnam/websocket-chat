@@ -3,7 +3,7 @@ name: Deploy to AWS EC2
 on:
   push:
     branches:
-      - flyway_db
+      - main
 
 jobs:
   deploy:
