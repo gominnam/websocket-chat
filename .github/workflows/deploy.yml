@@ -58,6 +58,6 @@ jobs:
             fi
             
             # 새로운 jar 파일 실행
-            pwd
-            nohup java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod &
+            nohup java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod > websocket-chat.log 2>&1 &
             disown
+            exit
