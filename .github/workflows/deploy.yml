@@ -47,5 +47,17 @@ jobs:
             export SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }}
             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            
+            # 기존에 실행중인 프로세스 ID 찾기
+            PID=$(ps -ef | grep websocket-chat.jar | grep -v grep | awk '{print $2}')
+            # PID가 존재하면 해당 프로세스 종료
+            if [ ! -z "$PID" ]; then
+              echo "Stopping existing application with PID $PID"
+              kill $PID
+              sleep 5
+            fi
+            
+            # 새로운 jar 파일 실행
+            pwd
             nohup java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod &
             disown
