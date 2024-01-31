@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   websocket-chat:
-    image: boosterko/websocket-chat:latest
+    image: boosterko/websocket-chat:${GITHUB_SHA}
     ports:
       - "8080:8080"
     environment:
@@ -10,7 +10,7 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     restart: always
   nginx:
-    image: boosterko/websocket-chat-nginx:latest
+    image: boosterko/websocket-chat-nginx:${GITHUB_SHA}
     ports:
       - "80:80"
     depends_on:

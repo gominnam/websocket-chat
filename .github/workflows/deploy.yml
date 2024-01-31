@@ -87,6 +87,7 @@ jobs:
             cd /home/ec2-user/app/config
             
             # Set environment variables and run docker-compose
+            export GITHUB_SHA=${{ github.sha }}
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
