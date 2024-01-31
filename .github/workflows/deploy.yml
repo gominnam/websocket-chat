@@ -3,7 +3,7 @@ name: Deploy to AWS EC2
 on:
   push:
     branches:
-      - docker
+      - main
 
 jobs:
   deploy:
@@ -43,9 +43,11 @@ jobs:
       - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@master
         with:
+
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_USER_NAME }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.AWS_EC2_PORT }}
           script: |
               docker pull boosterko/websocket-chat:${{ github.sha }}
               docker stop websocket-chat || true
