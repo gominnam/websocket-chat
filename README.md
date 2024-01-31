@@ -42,8 +42,8 @@
 #### - devops
 * Github Actions
 * AWS EC2
+* AWS RDS(MYSQL 8.0)
 * Docker
-* Mysql
 
 #### - frontend
 * Javascript

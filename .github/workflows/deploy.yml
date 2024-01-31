@@ -3,7 +3,7 @@ name: Deploy to AWS EC2
 on:
   push:
     branches:
-      - main
+      - docker
 
 jobs:
   deploy:
@@ -25,39 +25,33 @@ jobs:
           ls -l build/libs/
           pwd
 
-      # Jar 파일을 EC2 인스턴스로 복사
-      - name: Copy JAR to EC2 instance
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_USER_NAME }}
-          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          source: "/github/workspace/build/libs/websocket-chat.jar"
-          target: "/home/ec2-user/web/server"
+      - name: Build Docker image
+        run: |
+          docker build -t boosterko/websocket-chat:${{ github.sha }} .
+          docker images
 
-      - name: SSH into EC2 and restart application
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker image to Docker Hub
+        run: docker push boosterko/websocket-chat:${{ github.sha }}
+
+
+      - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_USER_NAME }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.AWS_EC2_PORT }}
           script: |
-            cd /home/ec2-user/web/server/github/workspace/build/libs
-            export SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }}
-            export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-            export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-            
-            # 기존에 실행중인 프로세스 ID 찾기
-            PID=$(ps -ef | grep websocket-chat.jar | grep -v grep | awk '{print $2}')
-            # PID가 존재하면 해당 프로세스 종료
-            if [ ! -z "$PID" ]; then
-              echo "Stopping existing application with PID $PID"
-              kill $PID
-              sleep 5
-            fi
-            
-            # 새로운 jar 파일 실행
-            nohup java -jar /home/ec2-user/web/server/github/workspace/build/libs/websocket-chat.jar --spring.profiles.active=prod > websocket-chat.log 2>&1 &
-            disown
-            exit
+              docker pull boosterko/websocket-chat:${{ github.sha }}
+              docker stop websocket-chat || true
+              docker rm websocket-chat || true
+              docker run -d --restart always --name websocket-chat \
+              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+              -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+              -p 8080:8080 boosterko/websocket-chat:${{ github.sha }}
