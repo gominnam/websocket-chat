@@ -28,7 +28,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t boosterko/websocket-chat:${{ github.sha }} .
-          docker built -t boosterko/websocket-chat-nginx:${{ github.sha }} ./nginx
+          docker build -t boosterko/websocket-chat-nginx:${{ github.sha }} ./nginx
           docker images
 
       - name: Login to Docker Hub
