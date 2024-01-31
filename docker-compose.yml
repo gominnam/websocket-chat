@@ -1,18 +1,16 @@
 version: '3.8'
 services:
   websocket-chat:
-    image: boosterko/websocket-chat:${{ github.sha }}
+    image: boosterko/websocket-chat:${GITHUB_SHA}
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     restart: always
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: boosterko/websocket-chat-nginx:${GITHUB_SHA}
     ports:
       - "80:80"
     depends_on:

@@ -52,8 +52,12 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
+            export GITHUB_SHA=${{ github.sha }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             docker-compose down || true
             docker-compose pull
-            docker-compose up -d
+            docker-compose up -d --force-recreate
             # Clean up Docker images
             docker image prune -a -f --filter "until=4h"
