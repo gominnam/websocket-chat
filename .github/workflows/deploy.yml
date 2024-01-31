@@ -71,9 +71,22 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
+            # Identify the container using 8080 port
+            CONTAINER_ID=$(docker ps --filter "publish=8080" -q)
+
+            # Stop and remove the container if exists
+            if [ ! -z "$CONTAINER_ID" ]; then
+              echo "Stopping and removing container $CONTAINER_ID"
+              docker stop $CONTAINER_ID
+              docker rm $CONTAINER_ID
+            else
+              echo "No container is using port 8080"
+            fi
+          
+            # move to docker-compose file directory
             cd /home/ec2-user/app/config
-            pwd
-            ls -l
+            
+            # Set environment variables and run docker-compose
             export GITHUB_SHA=${{ github.sha }}
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
