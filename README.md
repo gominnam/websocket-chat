@@ -3,9 +3,10 @@
 ### Project Purpose
 
 - User can chat with other users in real time.(Using Spring MVC and WebSocket)
-- Incorporating design patterns into the project.
+- Refactoring By applying design patterns into the project.
 - Using Kotlin instead of Java.
 - Using JWT for authentication.
+- Using Github-Actions for CI/CD to AWS EC2.
 
 
 ### Tables
@@ -39,10 +40,13 @@
 * Intellij IDEA
 
 #### - devops
-* Mysql, H2, AWS EC2
-
+* Github Actions
+* AWS EC2
+* Docker
+* Mysql
 
 #### - frontend
+* Javascript
 * Spring MVC
 * WebSocket
 
@@ -54,3 +58,4 @@
 * https://codepen.io/
 * [JWT Reference](https://github.com/Tienisto/spring-boot-kotlin/tree/master/rest-jwt-jpa)
 * [Spring Security Reference](https://github.com/thombergs/code-examples/tree/master/spring-security/getting-started)
+* [Chat-GPT](https://chat.openai.com/)
