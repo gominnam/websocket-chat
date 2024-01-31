@@ -33,7 +33,7 @@
 
 #### - backend
 * Kotlin
-* Spring Boot, Spring Security, WebSocket
+* Spring Boot, Spring Security, WebSocket, Nginx
 * JPA, Hibernate, flyway
 * Junit5, Mockito
 * Gradle
