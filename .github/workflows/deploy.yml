@@ -29,7 +29,6 @@ jobs:
         run: |
           docker build -t boosterko/websocket-chat:${{ github.sha }} .
           docker build -t boosterko/websocket-chat-nginx:${{ github.sha }} ./nginx
-          echo ${{ github.sha }}
           docker images
 
       - name: Login to Docker Hub
@@ -52,8 +51,9 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
+            pwd
+            ls -l
             export GITHUB_SHA=${{ github.sha }}
-            echo $GITHUB_SHA
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
