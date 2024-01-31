@@ -1,20 +1,19 @@
-# not yet used this file later using for test code
 version: '3.8'
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  websocket-chat:
+    image: boosterko/websocket-chat:${{ github.sha }}
     ports:
       - "8080:8080"
-    depends_on:
-      - mysql
-  mysql:
-    image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_DATABASE:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+    restart: always
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     ports:
-      - "3306:3306"
+      - "80:80"
+    depends_on:
+      - websocket-chat

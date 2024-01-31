@@ -3,7 +3,7 @@ name: Deploy to AWS EC2
 on:
   push:
     branches:
-      - main
+      - nginx
 
 jobs:
   deploy:
@@ -28,6 +28,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t boosterko/websocket-chat:${{ github.sha }} .
+          docker built -t boosterko/websocket-chat-nginx:${{ github.sha }} ./nginx
           docker images
 
       - name: Login to Docker Hub
@@ -37,7 +38,9 @@ jobs:
             password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Docker image to Docker Hub
-        run: docker push boosterko/websocket-chat:${{ github.sha }}
+        run: |
+          docker push boosterko/websocket-chat:${{ github.sha }}
+          docker push boosterko/websocket-chat-nginx:${{ github.sha }}
 
 
       - name: Deploy to AWS EC2
@@ -49,11 +52,8 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
-              docker pull boosterko/websocket-chat:${{ github.sha }}
-              docker stop websocket-chat || true
-              docker rm websocket-chat || true
-              docker run -d --restart always --name websocket-chat \
-              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-              -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
-              -p 8080:8080 boosterko/websocket-chat:${{ github.sha }}
+            docker-compose down || true
+            docker-compose pull
+            docker-compose up -d
+            # Clean up Docker images
+            docker image prune -a -f --filter "until=4h"
