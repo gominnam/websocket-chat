@@ -12,6 +12,9 @@ services:
   nginx:
     image: boosterko/websocket-chat-nginx:${GITHUB_SHA}
     ports:
-      - "80:80"
+      - "443:443"
+    volumes:
+      - "/etc/letsencrypt:/etc/letsencrypt"
     depends_on:
       - websocket-chat
+    restart: always
