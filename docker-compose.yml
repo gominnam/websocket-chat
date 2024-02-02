@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   websocket-chat:
     image: boosterko/websocket-chat:${GITHUB_SHA}
@@ -8,25 +9,28 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-    restart: always
+    networks:
+      - app-network
 
   nginx:
     image: boosterko/websocket-chat-nginx:${GITHUB_SHA}
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - "/etc/letsencrypt:/etc/letsencrypt"
     depends_on:
       - websocket-chat
-    restart: always
+    networks:
+      - app-network
 
   certbot:
     image: certbot/certbot
     volumes:
-      - "/etc/letsencrypt:/etc/letsencrypt"
-      - "/var/lib/letsencrypt:/var/lib/letsencrypt"
-      - "./certbot/www:/var/www/certbot"
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; done;'"
     command: >
       bash -c 'if ! [ -e "/etc/letsencrypt/live/boosterko.com/fullchain.pem" ]; then
@@ -36,3 +40,9 @@ services:
       fi && while :; do sleep 12h & wait $$!; done;'
     depends_on:
       - nginx
+    networks:
+        - app-network
+
+networks:
+  app-network:
+    driver: bridge
