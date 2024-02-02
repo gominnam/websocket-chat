@@ -51,6 +51,7 @@ jobs:
           port: ${{ secrets.AWS_EC2_PORT }}
           script: |
             mkdir -p /home/ec2-user/app/config
+            mkdir -p /etc/letsencrypt /var/lib/letsencrypt ./certbot/www
 
       - name: Copy docker-compose file to AWS EC2
         uses: appleboy/scp-action@master
