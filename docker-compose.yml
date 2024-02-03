@@ -15,6 +15,7 @@ services:
   nginx:
     image: boosterko/websocket-chat-nginx:${GITHUB_SHA}
     volumes:
+      - /home/ec2-user/app/data/nginx:/etc/nginx/conf.d
       - /home/ec2-user/app/data/certbot/conf:/etc/letsencrypt
       - /home/ec2-user/app/data/certbot/www:/var/www/certbot
     ports:
