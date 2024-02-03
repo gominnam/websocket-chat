@@ -15,8 +15,8 @@ services:
   nginx:
     image: boosterko/websocket-chat-nginx:${GITHUB_SHA}
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./app/data/certbot/conf:/etc/letsencrypt
+      - ./app/data/certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
