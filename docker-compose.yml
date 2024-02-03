@@ -33,7 +33,7 @@ services:
       - /home/ec2-user/app/data/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; done;'"
     command: >
-      bash -c 'if ! [ -e "/etc/letsencrypt/live/boosterko.com/fullchain.pem" ]; then
+      bash -c 'if ! [ -e "/etc/letsencrypt/live/boosterko.kr/fullchain.pem" ]; then
         certbot certonly --webroot --webroot-path=/var/www/certbot --email boosterkosok@gmail.com --agree-tos --no-eff-email -d boosterko.kr -d www.boosterko.kr --deploy-hook "nginx -s reload";
       else
         certbot renew --deploy-hook "nginx -s reload";
