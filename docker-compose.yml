@@ -41,7 +41,7 @@ services:
     depends_on:
       - nginx
     networks:
-        - app-network
+      - app-network
 
 networks:
   app-network:
