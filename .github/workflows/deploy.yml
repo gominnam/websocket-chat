@@ -95,7 +95,6 @@ jobs:
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             docker-compose down || true
             docker-compose pull
-            docker-compose run certbot certonly --webroot --webroot-path=/var/www/certbot -d boosterko.kr -d www.boosterko.kr
             docker-compose up -d --force-recreate
             
             # Clean up Docker images
