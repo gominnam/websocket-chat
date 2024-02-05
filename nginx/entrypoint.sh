@@ -4,7 +4,7 @@
 nginx &
 
 # Certbot 스크립트 실행
-/bin/bash /etc/cron/certbot
+/bin/bash /usr/local/bin/certbot.sh
 
 # Nginx 프로세스를 foreground에서 계속 실행
 wait $!

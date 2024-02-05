@@ -1,7 +1,6 @@
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    DOMAIN_NAME=${DOMAIN_NAME} \
     EMAIL=${EMAIL}
 
 # 필요한 패키지 설치
@@ -20,8 +19,8 @@ RUN apt-get update && apt-get install -y \
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # certbot 설정 파일 복사
-COPY certbot.sh /etc/cron/certbot
-RUN chmod +x /etc/cron/certbot
+COPY certbot.sh /usr/local/bin/certbot.sh
+RUN chmod +x /usr/local/bin/certbot.sh
 
 # /var/www/certbot 디렉토리 생성
 RUN mkdir -p /var/www/certbot
