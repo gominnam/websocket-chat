@@ -12,5 +12,5 @@ else
   certbot renew --deploy-hook "nginx -s reload"
 fi
 
-# 갱신 실패시 30일 후 다시 시도
-trap exit TERM; while :; do sleep 720h & wait $${!}; done;
+# 갱신 실패시 60일 후 다시 시도
+trap exit TERM; while :; do sleep 60d & wait ${!}; done;
