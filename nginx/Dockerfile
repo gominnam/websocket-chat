@@ -21,6 +21,10 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY certbot.sh /etc/cron/certbot
 RUN chmod +x /etc/cron/certbot
 
+# /var/www/certbot 디렉토리 생성
+RUN mkdir -p /var/www/certbot
+RUN chmod -R 755 /var/www/certbot
+
 # entrypoint.sh 파일 복사
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x entrypoint.sh
