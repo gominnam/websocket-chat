@@ -14,32 +14,11 @@ services:
 
   nginx:
     image: boosterko/websocket-chat-nginx:${GITHUB_SHA}
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - websocket-chat
-    networks:
-      - app-network
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; done;'"
-    command: >
-      pwd
-      bash -c 'if ! [ -e "/etc/letsencrypt/live/boosterko.kr/fullchain.pem" ]; then
-        certbot certonly --webroot --webroot-path=/var/www/certbot --email boosterkosok@gmail.com --agree-tos --no-eff-email -d boosterko.kr -d www.boosterko.kr --deploy-hook "nginx -s reload";
-      else
-        certbot renew --deploy-hook "nginx -s reload";
-      fi && while :; do sleep 12h & wait $$!; done;'
-    depends_on:
-      - nginx
     networks:
       - app-network
 
