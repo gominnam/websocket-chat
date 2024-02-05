@@ -21,16 +21,12 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY certbot.sh /etc/cron/certbot
 RUN chmod +x /etc/cron/certbot
 
+# entrypoint.sh 파일 복사
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 # HTTPS 포트 열기
 EXPOSE 80 443
 
-# nginx 시작 및 유지
-CMD ["nginx", "-g", "daemon off;"]
-
-# Certbot 갱신 스크립트 실행 및 Nginx 유지
-CMD ["/bin/bash", "-c", "/etc/cron/certbot && nginx -g 'daemon off;'"]
-
-
-
-
+# entrypoint.sh 스크립트를 엔트리포인트로 설정
+ENTRYPOINT ["/entrypoint.sh"]

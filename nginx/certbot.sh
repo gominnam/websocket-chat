@@ -13,4 +13,4 @@ else
 fi
 
 # 갱신 실패시 60일 후 다시 시도
-trap exit TERM; while :; do sleep 60d & wait ${!}; done;
+trap exit TERM; while :; do sleep 30d & wait ${!}; done;
