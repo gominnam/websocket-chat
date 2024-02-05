@@ -6,12 +6,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # 필요한 패키지 설치
 RUN apt-get update && apt-get install -y \
+    openssl \
     software-properties-common \
     nginx \
     certbot \
     python3-certbot-nginx \
     cron \
     bash \
+    && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
 # nginx 설정 파일 복사
