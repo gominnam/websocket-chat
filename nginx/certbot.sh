@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Dockerfile에서 정의한 환경변수 사용
-EMAIL="${EMAIL}"
-
 # 인증서가 이미 존재하는지 확인
 if ! [ -e "/etc/letsencrypt/live/boosterko.kr/fullchain.pem" ]; then
   # 인증서가 없으면 발급 받음
