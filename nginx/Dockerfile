@@ -1,5 +1,7 @@
 FROM ubuntu:22.04
 
+# 환경변수 설정
+ARG EMAIL
 ENV DEBIAN_FRONTEND=noninteractive \
     EMAIL=${EMAIL}
 
@@ -12,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     python3-certbot-nginx \
     cron \
     bash \
-    && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
 # nginx 설정 파일 복사
