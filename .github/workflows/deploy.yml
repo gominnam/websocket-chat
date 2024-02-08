@@ -64,6 +64,10 @@ jobs:
           target: "/home/ec2-user/app/config"
           overwrite: true
 
+      - name: Initial Certbot Authentication
+        run: |
+            docker-compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot --email ${{ secrets.EMAIL }} --agree-tos --no-eff-email --force-renewal -d www.boosterko.kr -d boosterko.kr || true
+
       - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@master
         with:
