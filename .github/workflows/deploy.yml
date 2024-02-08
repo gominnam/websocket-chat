@@ -92,6 +92,7 @@ jobs:
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            export EMAIL=${{ secrets.EMAIL }}
             docker-compose down || true
             docker-compose pull
             docker-compose up -d --force-recreate
