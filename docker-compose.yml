@@ -26,6 +26,15 @@ services:
     networks:
       - app-network
 
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email --staging -d www.boosterko.kr -d boosterko.kr
+    depends_on:
+      - nginx
+
 networks:
   app-network:
     driver: bridge
