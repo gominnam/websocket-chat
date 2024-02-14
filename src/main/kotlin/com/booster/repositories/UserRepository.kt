@@ -9,7 +9,6 @@ import java.util.*
 interface UserRepository: JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.email = ?1 AND u.password = ?2")
     fun login(email: String, password: String): Optional<User>
-
     fun findByEmail(email: String): Optional<User>
     fun existsByEmail(email: String): Boolean
     fun findByRefreshToken(refreshToken: String?): Optional<User>

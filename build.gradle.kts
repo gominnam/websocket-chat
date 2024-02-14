@@ -44,7 +44,7 @@ dependencies {
     implementation("org.webjars:sockjs-client:1.0.2")
     implementation("org.webjars:stomp-websocket:2.3.3")
     implementation("org.webjars:bootstrap:3.4.0")
-    implementation("org.webjars:jquery:3.5.1")
+    implementation("org.webjars:jquery:3.7.1")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.mysql:mysql-connector-j")
     implementation("org.springframework.boot:spring-boot-starter-validation")

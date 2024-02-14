@@ -61,16 +61,18 @@ class UserController @Autowired constructor(
                 .build()
         }
 //        val authResponse = AuthResponse(tokenService.createToken(userDTO))
+        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email.toString())
+        val authResponse = AuthResponse(accessToken, refreshToken)
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
             .message("welcome in booster world")
-//            .data(authResponse)
+            .data(authResponse)
             .build()
     }
 
     @GetMapping("/find/{id}")
     fun findUser(@PathVariable id: Long): ApiResponse<UserResponse> {
-        var userDTO: UserDTO? = null
+        val userDTO: UserDTO?
         try{
             userDTO = userService.findById(id)
         } catch (e: UserException){
@@ -96,7 +98,6 @@ class UserController @Autowired constructor(
     @GetMapping
     fun someRequest(authentication: Authentication): String {
         val authUser = authentication.toUser()
-
         return "Hello ${authUser.name}"
     }
 }

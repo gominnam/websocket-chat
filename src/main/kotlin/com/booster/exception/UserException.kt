@@ -11,6 +11,11 @@ class UserException(private val errorCode: ErrorCode) : Exception(errorCode.desc
         fun notFound(): UserException {
             return UserException(ErrorCode.USER_NOT_FOUND)
         }
+
+        fun passwordNotMatch(): UserException {
+            return UserException(ErrorCode.USER_PASSWORD_NOT_MATCH)
+        }
+
         fun unAuthorized(): UserException {
             return UserException(ErrorCode.UNAUTHORIZED)
         }

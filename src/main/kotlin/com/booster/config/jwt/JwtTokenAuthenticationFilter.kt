@@ -16,13 +16,13 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
 
 
-class JwtAuthFilter(private val jwtService: JwtService?, private val userRepository: UserRepository?)
+class JwtTokenAuthenticationFilter(private val jwtService: JwtService?, private val userRepository: UserRepository?)
     : OncePerRequestFilter() {
 
     private val authoritiesMapper: GrantedAuthoritiesMapper = NullAuthoritiesMapper()
 
     companion object {
-        private const val NO_CHECK_URL = "/api/user/login"
+        private val NO_CHECK_URL = setOf("/api/user/login", "/api/user/register", "/")
     }
 
     private val log = KotlinLogging.logger {}
@@ -34,7 +34,7 @@ class JwtAuthFilter(private val jwtService: JwtService?, private val userReposit
         filterChain: FilterChain
     ) {
         log.info { "JwtAuthFilter.doFilterInternal()" }
-        if (request.requestURI.equals(NO_CHECK_URL)) {
+        if(NO_CHECK_URL.contains(request.requestURI)) {
             filterChain.doFilter(request, response)
             return
         }

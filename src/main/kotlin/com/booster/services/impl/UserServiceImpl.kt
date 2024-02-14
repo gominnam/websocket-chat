@@ -35,8 +35,13 @@ class UserServiceImpl (
 
     override fun login(userDTO: UserDTO?): UserDTO? {
         var user = modelMapper.map(userDTO, User::class.java)
-        var loginUser = userRepository.login(user.email, user.password)
+        var loginUser = userRepository.findByEmail(user.email)
                                         .orElseThrow { throw UserException(ErrorCode.USER_NOT_FOUND) }
+
+        if(!passwordEncoder.matches(user.password, loginUser.password)) {
+            throw UserException(ErrorCode.USER_PASSWORD_NOT_MATCH)
+        }
+
         return modelMapper.map(loginUser, UserDTO::class.java)
     }
 
