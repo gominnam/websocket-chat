@@ -7,37 +7,31 @@ function saveRefreshTokenToLocalStorage(refreshToken) {
     localStorage.setItem('refreshToken', refreshToken);
 }
 
-// 토큰을 가져와서 헤더에 추가하고 API 호출
-function ApiRequest(url, method) {
+async function ApiRequest(requestUrl, method) {
     const accessToken = localStorage.getItem('accessToken');
-
     if (!accessToken) {
-        console.error('Access Token not found');
+        window.location.href = "/";
         return;
     }
 
-    fetch(url, {
-        method: method, // 또는 다른 HTTP 메소드
-        headers: {
-            'Content-Type': 'application/json',
-            'accessHeader': accessToken
-        },
-    })
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            console.log('Server Data:', data);
-            // 다음 작업 수행
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    try {
+        const response = await fetch(requestUrl, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            }
         });
+
+        if (response.ok) {
+            // 토큰 유효, /chat 페이지로 리다이렉트
+            window.location.href = requestUrl;
+        } else {
+            // 토큰 무효, 로그인 페이지로 리다이렉트
+            window.location.href = "/";
+        }
+    } catch (error) {
+        console.error('Error validating token:', error);
+        window.location.href = "/";
+    }
 }
-
-// 예시: 로그인 후 토큰 저장
-const receivedAccessToken = 'your-received-access-token';
-saveTokenToLocalStorage(receivedAccessToken);
-
-// 예시: API 호출
-makeApiRequest();

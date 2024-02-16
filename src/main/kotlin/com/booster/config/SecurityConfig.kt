@@ -2,23 +2,37 @@ package com.booster.config
 
 import com.booster.config.jwt.JwtService
 import com.booster.config.jwt.JwtTokenAuthenticationFilter
+import com.booster.config.oauth.CustomOAuth2LoginSuccessHandler
 import com.booster.repositories.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Lazy
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(val userRepository: UserRepository, val jwtService: JwtService) {
-
-    //private val objectMapper: ObjectMapper = ObjectMapper()
+class SecurityConfig(
+    val userRepository: UserRepository,
+    val jwtService: JwtService,
+) {
+    companion object {
+        val NO_CHECK_URLS = setOf(
+            "/",
+            "/favicon.ico",
+            "/css/**",
+            "/images/**",
+            "/js/**",
+            "/api/user/login",
+            "/api/user/register"
+        )
+    }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -49,23 +63,16 @@ class SecurityConfig(val userRepository: UserRepository, val jwtService: JwtServ
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { csrf -> csrf.disable() }
+            .sessionManagement { sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/api/user/login", "/api/user/register").permitAll()
+                    .requestMatchers(*NO_CHECK_URLS.toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
-            .sessionManagement { sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .formLogin { formLogin -> formLogin.disable() }
             .httpBasic { httpBasic -> httpBasic.disable() }
-            .logout { logout ->
-                logout.permitAll()
-            }
-            .oauth2Login { oauth2Login ->
-                oauth2Login.defaultSuccessUrl("/chat")
-            }
             .addFilterBefore(JwtTokenAuthenticationFilter(jwtService, userRepository), UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }
-
 }

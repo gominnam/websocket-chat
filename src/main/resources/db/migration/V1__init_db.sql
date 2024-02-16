@@ -9,7 +9,7 @@ create table user (
     password varchar(255) not null,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now(),
-    role ENUM('ROLE_USER', 'ROLE_ADMIN'),
+    role ENUM('USER', 'ADMIN'),
     image_url varchar(255),
     refresh_token varchar(255),
     social_id varchar(255),

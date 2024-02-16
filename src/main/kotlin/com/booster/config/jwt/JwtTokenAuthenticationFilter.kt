@@ -21,11 +21,19 @@ class JwtTokenAuthenticationFilter(private val jwtService: JwtService?, private 
 
     private val authoritiesMapper: GrantedAuthoritiesMapper = NullAuthoritiesMapper()
 
-    companion object {
-        private val NO_CHECK_URL = setOf("/api/user/login", "/api/user/register", "/")
-    }
-
     private val log = KotlinLogging.logger {}
+
+    companion object {
+        val NO_CHECK_URL_PATTERNS = listOf(
+            "^/$",
+            "^/favicon.ico$",
+            "^/css/.*",
+            "^/images/.*",
+            "^/js/.*",
+            "^/api/user/login$",
+            "^/api/user/register$"
+        ).map { it.toRegex() }
+    }
 
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
@@ -33,15 +41,15 @@ class JwtTokenAuthenticationFilter(private val jwtService: JwtService?, private 
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        log.info { "JwtAuthFilter.doFilterInternal()" }
-        if(NO_CHECK_URL.contains(request.requestURI)) {
+        log.info { "JwtTokenAuthenticationFilter.doFilterInternal()" }
+        log.info { "requestURI: " + request.requestURI }
+        if (NO_CHECK_URL_PATTERNS.any { it.matches(request.requestURI) }) {
             filterChain.doFilter(request, response)
             return
         }
 
-        val refreshToken = jwtService!!.extractRefreshToken(request)
-            .filter { token: String? -> jwtService.isTokenValid(token) }
-            .orElse(null)
+        val refreshToken = jwtService?.extractRefreshToken(request)
+            ?.takeIf { jwtService.isTokenValid(it) }
 
         if (refreshToken != null) {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken)
@@ -56,7 +64,7 @@ class JwtTokenAuthenticationFilter(private val jwtService: JwtService?, private 
             ?.ifPresent { user ->
                 val reIssuedRefreshToken = reissueRefreshToken(user)
                 jwtService!!.sendAccessAndRefreshToken(
-                    response!!, jwtService.createAccessToken(user.email),
+                    response!!, jwtService.createAccessToken(user.name, user.email),
                     reIssuedRefreshToken
                 )
             }
@@ -74,21 +82,23 @@ class JwtTokenAuthenticationFilter(private val jwtService: JwtService?, private 
         request: HttpServletRequest?, response: HttpServletResponse?,
         filterChain: FilterChain
     ) {
-        jwtService!!.extractAccessToken(request!!)
-            .filter { token: String? -> jwtService.isTokenValid(token) }
-            .ifPresent { accessToken: String? ->
-                jwtService.extractEmail(accessToken)
-                    .ifPresent { email: String? ->
-                        userRepository!!.findByEmail(email!!)
-                            .ifPresent { user: User ->
-                                saveAuthentication(user)
-                            }
+        jwtService?.extractAccessToken(request!!)?.let { token ->
+            if (jwtService.isTokenValid(token)) {
+                jwtService.extractEmail(token)?.let { email ->
+                    log.info { "email: $email" }
+                    userRepository?.findByEmail(email)?.let { optionalUser ->
+                        optionalUser.orElse(null)?.let { user ->
+                            saveAuthentication(user)
+                        }
                     }
+                }
             }
+        }
         filterChain.doFilter(request, response)
     }
 
     private fun saveAuthentication(user: User) {
+        log.info { "saveAuthentication() user: $user" }
         var password: String = user.password
         if (password == "") {
             password = PasswordUtil().generateRandomPassword()

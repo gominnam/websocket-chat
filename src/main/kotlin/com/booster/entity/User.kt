@@ -29,7 +29,7 @@ data class User (
     var socialId: String?,
     var refreshToken: String,
 ) : AuditLog() {
-    constructor() : this(null, "", "", "", "", Role.ROLE_USER, null, null, "")
+    constructor() : this(null, "", "", "", "", Role.USER, null, null, "")
 
     class Builder{
         private var id: Long? = null
@@ -37,7 +37,7 @@ data class User (
         private var name: String = ""
         private var password: String = ""
         private var imageUrl: String = ""
-        private var role: Role = Role.ROLE_USER
+        private var role: Role = Role.USER
         private var socialType: SocialType? = null
         private var socialId: String? = null
         private var refreshToken: String = ""

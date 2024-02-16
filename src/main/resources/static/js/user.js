@@ -44,14 +44,9 @@ async function login(){
                 alert(data.message);
                 return;
             }
-            const accessToken = data.data.accessToken;
-            const refreshToken = data.data.refreshToken;
-            const headers = new Headers();
-            //cookie 설정하는 util 함수 만들어서 사용하기
-            headers.append("Authorization", `Bearer ${accessToken}`);
-            headers.append("Authorization-refresh", `Bearer ${refreshToken}`);
-            window.location.href = "/chat";
-            console.log('로그인 성공', data);
+            saveAccessTokenToLocalStorage(data.data.accessToken);
+            saveRefreshTokenToLocalStorage(data.data.refreshToken);
+            await ApiRequest('/chat', 'GET');
         } else {
             // 오류 처리
             throw new Error('Network response was not ok');
@@ -62,28 +57,6 @@ async function login(){
         // 화면 잠금 해제
         hideLoadingSpinner();
     }
-
-
-
-    // fetch('/api/user/login', {
-    //     method: 'POST',
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    // }).then(response => {
-    //     if(!response.ok){
-    //         throw new Error('Network response was not ok');
-    //     }
-    //     var accessToken  = response.headers.get('Authorization');
-    //     var refreshToken  = response.headers.get('Authorization-refresh');
-    //     const headers = new Headers();
-    //     headers.append("Authorization", `Bearer ${accessToken}`);
-    //     window.location.href = "/chat";
-    // })
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //     });
 }
 
 userSingUpButton.addEventListener('click', () => {

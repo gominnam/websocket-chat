@@ -7,6 +7,7 @@ import com.booster.repositories.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
@@ -30,6 +31,7 @@ class JwtService {
     @Value("\${jwt.refresh.header}")
     val refreshHeader: String? = null
 
+    @Autowired
     private val userRepository: UserRepository? = null
 
     val log = KotlinLogging.logger {}
@@ -37,18 +39,19 @@ class JwtService {
     companion object {
         private const val ACCESS_TOKEN_SUBJECT = "AccessToken"
         private const val REFRESH_TOKEN_SUBJECT = "RefreshToken"
-        private const val CLAIM = "email"
+        private const val NAME_CLAIM = "name"
+        private const val EMAIL_CLAIM = "email"
         private const val BEARER = "Bearer "
     }
 
-    fun createAccessToken(email: String?): String {
+    fun createAccessToken(name: String?, email: String?): String {
         val now = Date()
         return JWT.create()
             .withSubject(ACCESS_TOKEN_SUBJECT)
             .withExpiresAt(Date(now.time + accessTokenExpirationTime!!))
-            //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
-            //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
-            .withClaim(CLAIM, email)
+            //추가할 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정
+            .withClaim(NAME_CLAIM, name)
+            .withClaim(EMAIL_CLAIM, email)
             .sign(Algorithm.HMAC512(secretKey))
     }
 
@@ -60,43 +63,40 @@ class JwtService {
             .sign(Algorithm.HMAC512(secretKey))
     }
 
+    /**
+     * Access Token을 Response Header에 담아서 보내주는 메소드
+     */
     fun sendAccessToken(response: HttpServletResponse, accessToken: String?) {
         response.status = HttpServletResponse.SC_OK
         response.setHeader(accessHeader, accessToken)
-        log.info { "${"Access Token : {}"} $accessToken" }
     }
 
+    /**
+     * Access Token과 Refresh Token을 Response Header에 담아서 보내주는 메소드
+     */
     fun sendAccessAndRefreshToken(response: HttpServletResponse, accessToken: String?, refreshToken: String?) {
         response.status = HttpServletResponse.SC_OK
         setAccessTokenHeader(response, accessToken)
         setRefreshTokenHeader(response, refreshToken)
-        log.info { "set in header that Access Token, Refresh Token " }
     }
 
-    fun extractRefreshToken(request: HttpServletRequest): Optional<String> {
-        return Optional.ofNullable(request.getHeader(refreshHeader))
-            .filter { refreshToken -> refreshToken.startsWith(BEARER) }
-            .map { refreshToken -> refreshToken.replace(BEARER, "") }
+    fun extractRefreshToken(request: HttpServletRequest): String? {
+        return request.getHeader(refreshHeader)?.takeIf { it.startsWith(BEARER) }?.substring(BEARER.length)
     }
 
-    fun extractAccessToken(request: HttpServletRequest): Optional<String> {
-        return Optional.ofNullable(request.getHeader(accessHeader))
-            .filter { refreshToken -> refreshToken.startsWith(BEARER) }
-            .map { refreshToken -> refreshToken.replace(BEARER, "") }
+    fun extractAccessToken(request: HttpServletRequest): String? {
+        return request.getHeader(accessHeader)?.takeIf { it.startsWith(BEARER) }?.substring(BEARER.length)
     }
 
-    fun extractEmail(accessToken: String?): Optional<String> {
+    fun extractEmail(accessToken: String?): String? {
         return try {
-            Optional.ofNullable(
-                JWT.require(Algorithm.HMAC512(secretKey))
-                    .build()
-                    .verify(accessToken)
-                    .getClaim(CLAIM)
-                    .asString()
-            )
+            JWT.require(Algorithm.HMAC512(secretKey))
+                .build()
+                .verify(accessToken)
+                .getClaim(EMAIL_CLAIM).asString()
         } catch (e: Exception) {
             log.error { "unvalided token" }
-            Optional.empty()
+            null
         }
     }
 
@@ -109,16 +109,18 @@ class JwtService {
     }
 
     fun updateRefreshToken(email: String?, refreshToken: String) {
-        userRepository!!.findByEmail(email!!)
-            .ifPresentOrElse(
-                { user: User ->
-                    user.refreshToken = refreshToken
-                }
-            ) { throw Exception("not exists user") }
+        email ?: throw IllegalArgumentException("Email cannot be null")
+        log.info { "email : $email, refreshToken : $refreshToken"}
+        userRepository?.findByEmail(email)?.ifPresentOrElse(
+            { user: User ->
+                userRepository.updateRefreshTokenByEmail(user.email, refreshToken)
+            }
+        ) { throw Exception("not exists user") }
     }
 
     fun isTokenValid(token: String?): Boolean {
         return try {
+            log.info { "token : $token" }
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token)
             true
         } catch (e: Exception) {
@@ -127,9 +129,10 @@ class JwtService {
         }
     }
 
-    fun issueTokens(email: String): Pair<String, String> {
-        val accessToken = createAccessToken(email)
+    fun issueTokens(name: String, email: String): Pair<String, String> {
+        val accessToken = createAccessToken(name, email)
         val refreshToken = createRefreshToken()
+        updateRefreshToken(email, refreshToken)
         return Pair(accessToken, refreshToken)
     }
 }
