@@ -38,14 +38,8 @@ async function login(){
             body: JSON.stringify(data),
         });
         if (response.ok) {
-            //로그인 성공 로직
-            const data = await response.json();
-            if(data.status !== 200){
-                alert(data.message);
-                return;
-            }
-            saveAccessTokenToLocalStorage(data.data.accessToken);
-            saveRefreshTokenToLocalStorage(data.data.refreshToken);
+            saveAccessTokenToLocalStorage(response.headers.get('Authorization'));
+            saveRefreshTokenToLocalStorage(response.headers.get('Authorization-refresh'));
             await ApiRequest('/chat', 'GET');
         } else {
             // 오류 처리

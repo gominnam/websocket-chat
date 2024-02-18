@@ -1,5 +1,8 @@
-package com.booster.config.jwt
+package com.booster.config.jwt.filter
 
+import com.booster.config.jwt.JwtService
+import com.booster.config.jwt.PasswordUtil
+import com.booster.config.login.CustomUserDetails
 import com.booster.entity.User
 import com.booster.repositories.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -103,15 +106,19 @@ class JwtTokenAuthenticationFilter(private val jwtService: JwtService?, private 
         if (password == "") {
             password = PasswordUtil().generateRandomPassword()
         }
-        val userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-            .username(user.email)
+
+        val userDetailsUser = CustomUserDetails.Builder()
+            .email(user.email)
             .password(password)
-            .roles(user.role.name)
+            .name(user.name)
+            .authorities(user.role)
             .build()
+
         val authentication: Authentication = UsernamePasswordAuthenticationToken(
             userDetailsUser, null,
             authoritiesMapper.mapAuthorities(userDetailsUser.authorities)
         )
+
         SecurityContextHolder.getContext().authentication = authentication
     }
 

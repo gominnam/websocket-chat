@@ -49,7 +49,6 @@ class JwtService {
         return JWT.create()
             .withSubject(ACCESS_TOKEN_SUBJECT)
             .withExpiresAt(Date(now.time + accessTokenExpirationTime!!))
-            //추가할 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정
             .withClaim(NAME_CLAIM, name)
             .withClaim(EMAIL_CLAIM, email)
             .sign(Algorithm.HMAC512(secretKey))
@@ -113,18 +112,17 @@ class JwtService {
         log.info { "email : $email, refreshToken : $refreshToken"}
         userRepository?.findByEmail(email)?.ifPresentOrElse(
             { user: User ->
-                userRepository.updateRefreshTokenByEmail(user.email, refreshToken)
+                user.refreshToken = refreshToken
+                userRepository.saveAndFlush(user)
             }
         ) { throw Exception("not exists user") }
     }
 
     fun isTokenValid(token: String?): Boolean {
         return try {
-            log.info { "token : $token" }
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token)
             true
         } catch (e: Exception) {
-            log.error { "${"not valid token {}"} ${e.message}" }
             false
         }
     }
@@ -141,8 +139,3 @@ data class AuthContext(val user: User, val isAdmin: Boolean)
 fun Authentication.toUser(): User {
     return (this.principal as AuthContext).user
 }
-/*
-* fun toUser(authentication: Authentication): User {
-*   return (authentication.principal as AuthContext).user
-* }
-*  */

@@ -49,7 +49,7 @@ class UserController @Autowired constructor(
             .build()
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login/foo")
     fun login(@RequestBody request: UserRequest): ApiResponse<AuthResponse>? {
         val userDTO = modelMapper.map(request, UserDTO::class.java)
         try{

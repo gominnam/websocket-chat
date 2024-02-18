@@ -17,6 +17,6 @@ interface UserRepository: JpaRepository<User, Long> {
     fun findBySocialTypeAndSocialId(socialType: SocialType, socialId: String): Optional<User>
     @Transactional
     @Modifying
-    @Query("UPDATE User SET refreshToken = ?2 WHERE email = ?1")
+    @Query("UPDATE User SET refreshToken = ?2, updatedAt = CURRENT_TIMESTAMP WHERE email = ?1")
     fun updateRefreshTokenByEmail(email: String, refreshToken: String): Int
 }
