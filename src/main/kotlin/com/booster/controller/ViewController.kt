@@ -10,6 +10,11 @@ class ViewController {
         return "index"
     }
 
+    @GetMapping("/main")
+    fun main(): String {
+        return "main"
+    }
+
     @GetMapping("/chat")
     fun chat(): String {
         return "dashboard"

@@ -53,7 +53,7 @@ function showMessage(message) {
 }
 
 function connectValidation() {
-    if($("#name").val() == "") {
+    if($("#name").val() === "") {
         alert("Please enter your nickname");
         return false;
     }

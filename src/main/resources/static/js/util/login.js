@@ -14,6 +14,7 @@ signUpButton.addEventListener('click', () => {
 
 userSignInButton.addEventListener('click', async (event) => {
     event.preventDefault();
+    // event.stopPropagation()
     await login();
 });
 
@@ -24,23 +25,25 @@ async function login(){
 
     const data = {
         email: email,
-        password: password,
-        name: ""
+        password: password
     };
 
     showLoadingSpinner();
     try {
-        const response = await fetch('/api/user/login', {
+        const response = await fetch('/api/login', {
+            // fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data),
-        });
+            });
+
         if (response.ok) {
             saveAccessTokenToLocalStorage(response.headers.get('Authorization'));
             saveRefreshTokenToLocalStorage(response.headers.get('Authorization-refresh'));
-            await ApiRequest('/chat', 'GET');
+            await navigateTo('/chat');
+            // await apiRequest('/chat', 'GET');
         } else {
             // 오류 처리
             throw new Error('Network response was not ok');

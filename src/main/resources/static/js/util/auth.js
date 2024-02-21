@@ -7,13 +7,8 @@ function saveRefreshTokenToLocalStorage(refreshToken) {
     localStorage.setItem('refreshToken', refreshToken);
 }
 
-async function ApiRequest(requestUrl, method) {
+async function apiRequest(requestUrl, method) {
     const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-        window.location.href = "/";
-        return;
-    }
-
     try {
         const response = await fetch(requestUrl, {
             method: method,
@@ -22,16 +17,13 @@ async function ApiRequest(requestUrl, method) {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-
         if (response.ok) {
-            // 토큰 유효, /chat 페이지로 리다이렉트
-            window.location.href = requestUrl;
+            const htmlSource = await response.text(); // 응답 본문을 문자열로 변환
+            return htmlSource;
         } else {
-            // 토큰 무효, 로그인 페이지로 리다이렉트
-            window.location.href = "/";
+            console.error("Network response was not ok");
         }
     } catch (error) {
         console.error('Error validating token:', error);
-        window.location.href = "/";
     }
 }
