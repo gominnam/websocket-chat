@@ -34,12 +34,12 @@ class CustomJsonUsernamePasswordAuthenticationFilter(private val objectMapper: O
     }
 
     companion object {
-        private const val DEFAULT_LOGIN_REQUEST_URL = "/api/user/login"
+        private const val DEFAULT_LOGIN_REQUEST_URL = "/api/login"
         private const val HTTP_METHOD = "POST"
         private const val CONTENT_TYPE = "application/json"
         private const val USERNAME_KEY = "email" // userName JSON Key : "email"
         private const val PASSWORD_KEY = "password"
         private val DEFAULT_LOGIN_PATH_REQUEST_MATCHER =
-            AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD) // POST "/api/user/login" Request를 매칭된다.
+            AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD) // POST "/api/login" Request를 매칭된다.
     }
 }

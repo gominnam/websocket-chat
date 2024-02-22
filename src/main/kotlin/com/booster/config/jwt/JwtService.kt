@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -44,12 +45,11 @@ class JwtService {
         private const val BEARER = "Bearer "
     }
 
-    fun createAccessToken(name: String?, email: String?): String {
+    fun createAccessToken(email: String?): String {
         val now = Date()
         return JWT.create()
             .withSubject(ACCESS_TOKEN_SUBJECT)
             .withExpiresAt(Date(now.time + accessTokenExpirationTime!!))
-            .withClaim(NAME_CLAIM, name)
             .withClaim(EMAIL_CLAIM, email)
             .sign(Algorithm.HMAC512(secretKey))
     }
@@ -127,15 +127,20 @@ class JwtService {
         }
     }
 
-    fun issueTokens(name: String, email: String): Pair<String, String> {
-        val accessToken = createAccessToken(name, email)
+    fun isValid(token: String, userDetails: UserDetails): Boolean {
+        val email = extractEmail(token)
+        return userDetails.username == email && isTokenValid(token)
+    }
+
+    fun issueTokens(email: String): Pair<String, String> {
+        val accessToken = createAccessToken(email)
         val refreshToken = createRefreshToken()
         updateRefreshToken(email, refreshToken)
         return Pair(accessToken, refreshToken)
     }
 }
-
-data class AuthContext(val user: User, val isAdmin: Boolean)
-fun Authentication.toUser(): User {
-    return (this.principal as AuthContext).user
-}
+//
+//data class AuthContext(val user: User, val isAdmin: Boolean)
+//fun Authentication.toUser(): User {
+//    return (this.principal as AuthContext).user
+//}

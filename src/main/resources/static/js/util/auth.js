@@ -7,15 +7,19 @@ function saveRefreshTokenToLocalStorage(refreshToken) {
     localStorage.setItem('refreshToken', refreshToken);
 }
 
+//todo: 만료시간 체킹
 async function apiRequest(requestUrl, method) {
     const accessToken = localStorage.getItem('accessToken');
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+    if (accessToken && accessToken !== 'null') {
+        headers['Authorization'] = `Bearer ${accessToken}`;
+    }
     try {
         const response = await fetch(requestUrl, {
             method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            }
+            headers: headers
         });
         if (response.ok) {
             const htmlSource = await response.text(); // 응답 본문을 문자열로 변환

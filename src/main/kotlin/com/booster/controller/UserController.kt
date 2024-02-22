@@ -1,7 +1,6 @@
 package com.booster.controller
 
 import com.booster.config.jwt.JwtService
-import com.booster.config.jwt.toUser
 import com.booster.dto.UserDTO
 import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
@@ -14,7 +13,6 @@ import com.booster.util.HttpStatus
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -39,7 +37,7 @@ class UserController @Autowired constructor(
                     .build()
             }
         }
-        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.name!!, userDTO.email!!)
+        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email!!)
         log.info{"accessToken : $accessToken, refreshToken : $refreshToken"}
 
         return ApiResponse.Builder<AuthResponse>()
@@ -60,7 +58,7 @@ class UserController @Autowired constructor(
                 .message(e.message)
                 .build()
         }
-        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.name.toString(), userDTO.email.toString())
+        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email.toString())
         val authResponse = AuthResponse(accessToken, refreshToken)
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)
@@ -94,9 +92,9 @@ class UserController @Autowired constructor(
         return "delete success"
     }
 
-    @GetMapping
-    fun someRequest(authentication: Authentication): String {
-        val authUser = authentication.toUser()
-        return "Hello ${authUser.name}"
-    }
+//    @GetMapping
+//    fun someRequest(authentication: Authentication): String {
+//        val authUser = authentication.toUser()
+//        return "Hello ${authUser.name}"
+//    }
 }

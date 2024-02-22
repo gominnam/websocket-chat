@@ -93,7 +93,6 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers(*NO_CHECK_URLS.toTypedArray()).permitAll()
-//                    .requestMatchers("/chat").hasRole("USER")
                     .anyRequest().authenticated()
             }
             .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter::class.java)
