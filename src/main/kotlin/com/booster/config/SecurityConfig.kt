@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.DefaultSecurityFilterChain
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.logout.LogoutFilter
 
 
@@ -49,10 +50,10 @@ class SecurityConfig(
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
     }
 
-//    @Bean
-//    fun customOAuth2LoginSuccessHandler(): AuthenticationSuccessHandler {
-//        return CustomOAuth2LoginSuccessHandler()
-//    }
+    @Bean
+    fun customOAuth2LoginSuccessHandler(): AuthenticationSuccessHandler {
+        return CustomOAuth2LoginSuccessHandler()
+    }
 
     @Bean
     fun authenticationManager(): AuthenticationManager? {
@@ -94,6 +95,10 @@ class SecurityConfig(
                 it
                     .requestMatchers(*NO_CHECK_URLS.toTypedArray()).permitAll()
                     .anyRequest().authenticated()
+            }
+            .oauth2Login { oauth2Login ->
+                oauth2Login
+                    .successHandler(customOAuth2LoginSuccessHandler())
             }
             .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter::class.java)
             .addFilterBefore(JwtTokenAuthenticationFilter(jwtService, customUserDetailsService, userRepository), CustomJsonUsernamePasswordAuthenticationFilter::class.java)
