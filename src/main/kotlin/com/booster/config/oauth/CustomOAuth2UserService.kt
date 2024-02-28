@@ -1,9 +1,9 @@
-import com.booster.config.oauth.CustomOAuth2User
-import com.booster.config.oauth.OAuthAttributes
+package com.booster.config.oauth
+
 import com.booster.entity.User
 import com.booster.enums.SocialType
 import com.booster.repositories.UserRepository
-import org.slf4j.LoggerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
@@ -18,12 +18,13 @@ class CustomOAuth2UserService(
 ) : OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     companion object {
-        private val log = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
         private const val GOOGLE = "google"
     }
 
+    private val log = KotlinLogging.logger {}
+
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
-        log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입")
+        log.info{"CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입"}
 
         val delegate = DefaultOAuth2UserService()
         val oAuth2User = delegate.loadUser(userRequest)
@@ -61,3 +62,4 @@ class CustomOAuth2UserService(
         return userRepository.save(createdUser)
     }
 }
+

@@ -24,12 +24,7 @@ class JwtTokenAuthenticationFilter(
     private val jwtService: JwtService,
     private val customUserDetailsService: CustomUserDetailsService,
     private val userRepository: UserRepository
-)
-    : OncePerRequestFilter() {
-
-    private val authoritiesMapper: GrantedAuthoritiesMapper = NullAuthoritiesMapper()
-
-    private val log = KotlinLogging.logger {}
+) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -37,18 +32,14 @@ class JwtTokenAuthenticationFilter(
         filterChain: FilterChain
     ) {
         val authHeader: String? = request.getHeader("Authorization")
-        if (authHeader.doesNotContainBearerToken()) {
-            filterChain.doFilter(request, response)
-            return
+        val refreshHeader: String? = request.getHeader("Authorization-refresh")
+
+        if (authHeader != null && authHeader.doesNotContainBearerToken()) {
+            validateAndAuthenticate(authHeader, request)
+        } else if (refreshHeader != null && refreshHeader.doesNotContainBearerToken()) {
+            checkRefreshTokenAndReIssueAccessToken(response, refreshHeader.extractTokenValue())
         }
-        val jwtToken = authHeader!!.extractTokenValue()
-        val email = jwtService.extractEmail(jwtToken)
-        if (email != null && SecurityContextHolder.getContext().authentication == null) {
-            val foundUser = customUserDetailsService.loadUserByUsername(email)
-            if (jwtService.isValid(jwtToken, foundUser))
-                updateContext(foundUser, request)
-            filterChain.doFilter(request, response)
-        }
+        filterChain.doFilter(request, response)
     }
 
     private fun String?.doesNotContainBearerToken() =
@@ -56,6 +47,17 @@ class JwtTokenAuthenticationFilter(
 
     private fun String.extractTokenValue() =
         this.substringAfter("Bearer ")
+
+    private fun validateAndAuthenticate(header: String, request: HttpServletRequest) {
+        val token = header.extractTokenValue()
+        val subject = jwtService.extractEmail(token)
+        if (subject != null && SecurityContextHolder.getContext().authentication == null) {
+            val userDetails = customUserDetailsService.loadUserByUsername(subject)
+            if (jwtService.isValid(token, userDetails)) {
+                updateContext(userDetails, request)
+            }
+        }
+    }
 
     private fun updateContext(foundUser: UserDetails, request: HttpServletRequest) {
         val authToken = UsernamePasswordAuthenticationToken(foundUser, null, foundUser.authorities)
@@ -66,54 +68,8 @@ class JwtTokenAuthenticationFilter(
     private fun checkRefreshTokenAndReIssueAccessToken(response: HttpServletResponse?, refreshToken: String?) {
         userRepository.findByRefreshToken(refreshToken)
             .ifPresent { user ->
-                val reIssuedRefreshToken = reissueRefreshToken(user)
-                jwtService.sendAccessAndRefreshToken(
-                    response!!, jwtService.createAccessToken(user.email),
-                    reIssuedRefreshToken
-                )
+                val reIssuedAccessToken = jwtService.createAccessToken(user.email)
+                jwtService.sendAccessToken(response!!, reIssuedAccessToken)
             }
     }
-
-    private fun reissueRefreshToken(user: User): String {
-        val reIssuedRefreshToken = jwtService.createRefreshToken()
-        user.refreshToken = reIssuedRefreshToken
-        userRepository.saveAndFlush<User>(user)
-        return reIssuedRefreshToken
-    }
-
-    @Throws(ServletException::class, IOException::class)
-    fun checkAccessTokenAndAuthentication(
-        request: HttpServletRequest, response: HttpServletResponse,
-        filterChain: FilterChain
-    ) {
-        jwtService.extractAccessToken(request)?.let { token ->
-            if (jwtService.isTokenValid(token)) {
-                jwtService.extractEmail(token)?.let { email ->
-                    userRepository.findByEmail(email).orElse(null)?.let { user ->
-                        saveAuthentication(user)
-                    }
-                }
-            }
-        }
-        filterChain.doFilter(request, response)
-    }
-
-    private fun saveAuthentication(user: User) {
-        log.info { "saveAuthentication() user: $user" }
-        val password = user.password.ifEmpty { PasswordUtil().generateRandomPassword() }
-
-        val userDetails = org.springframework.security.core.userdetails.User.builder()
-            .username(user.email)
-            .password(password)
-            .roles(user.role.name)
-            .build()
-
-        val authentication = UsernamePasswordAuthenticationToken(
-            userDetails, null,
-            authoritiesMapper.mapAuthorities(userDetails.authorities)
-        )
-
-        SecurityContextHolder.getContext().authentication = authentication
-    }
-
 }

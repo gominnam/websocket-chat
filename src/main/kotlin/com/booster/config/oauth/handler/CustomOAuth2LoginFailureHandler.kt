@@ -5,9 +5,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
-import org.springframework.stereotype.Component
 
-@Component
 class CustomOAuth2LoginFailureHandler : AuthenticationFailureHandler {
 
     companion object {

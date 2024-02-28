@@ -53,7 +53,6 @@ dependencies {
 
     implementation("org.flywaydb:flyway-mysql")
 
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.security:spring-security-crypto")
     implementation("com.auth0:java-jwt:4.2.1")

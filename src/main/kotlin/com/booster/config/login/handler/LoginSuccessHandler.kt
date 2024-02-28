@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 class LoginSuccessHandler(
     private val jwtService: JwtService,
     private val userRepository: UserRepository
-//) : AuthenticationSuccessHandler {
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     companion object {
@@ -45,10 +44,4 @@ class LoginSuccessHandler(
         return userDetails.username
     }
 
-
-
-//    private fun extractEmail(authentication: Authentication): String {
-//        val userDetails = authentication.principal as CustomUserDetails
-//        return userDetails.username
-//    }
 }
