@@ -1,23 +1,18 @@
 package com.booster.config.jwt.filter
 
+import com.booster.config.SecurityConfigProperties.Companion.NO_CHECK_URLS
 import com.booster.config.jwt.JwtService
-import com.booster.config.jwt.PasswordUtil
 import com.booster.config.login.CustomUserDetailsService
-import com.booster.entity.User
 import com.booster.repositories.UserRepository
-import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.FilterChain
-import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper
-import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
-import java.io.IOException
 
 
 class JwtTokenAuthenticationFilter(
@@ -38,6 +33,9 @@ class JwtTokenAuthenticationFilter(
             validateAndAuthenticate(authHeader, request)
         } else if (refreshHeader != null && refreshHeader.doesNotContainBearerToken()) {
             checkRefreshTokenAndReIssueAccessToken(response, refreshHeader.extractTokenValue())
+        } else if (!request.isUrlExcluded()) {
+            handleUnauthenticatedRequests(request, response)
+            return
         }
         filterChain.doFilter(request, response)
     }
@@ -71,5 +69,21 @@ class JwtTokenAuthenticationFilter(
                 val reIssuedAccessToken = jwtService.createAccessToken(user.email)
                 jwtService.sendAccessToken(response!!, reIssuedAccessToken)
             }
+    }
+
+    private fun handleUnauthenticatedRequests(request: HttpServletRequest, response: HttpServletResponse) {
+        val acceptHeader = request.getHeader("Accept")
+        response.status = HttpServletResponse.SC_UNAUTHORIZED
+        response.writer.write("{\"error\": \"Unauthenticated\"}")
+        response.sendRedirect("/")
+    }
+
+    private fun HttpServletRequest.isUrlExcluded(): Boolean {
+        val requestURL = this.requestURI.toString()
+        val pathMatcher = AntPathMatcher()
+
+        return NO_CHECK_URLS.any { pattern ->
+            pathMatcher.match(pattern, requestURL)
+        }
     }
 }

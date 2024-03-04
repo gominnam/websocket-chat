@@ -18,7 +18,8 @@ class CustomOAuth2LoginFailureHandler : AuthenticationFailureHandler {
         exception: AuthenticationException?
     ) {
         response?.status = HttpServletResponse.SC_BAD_REQUEST
-        response?.writer?.write("소셜 로그인 실패! 서버 로그를 확인해주세요.")
+        //response?.writer?.write("social login failure!!")
+        response?.sendRedirect("/error?message=youNeedToLogIn")
         log.info("소셜 로그인에 실패했습니다. 에러 메시지 : {}", exception?.message)
     }
 }

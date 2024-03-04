@@ -6,6 +6,9 @@ import com.booster.config.login.CustomUserDetailsService
 import com.booster.config.login.filter.CustomJsonUsernamePasswordAuthenticationFilter
 import com.booster.config.login.handler.LoginFailureHandler
 import com.booster.config.login.handler.LoginSuccessHandler
+import com.booster.config.oauth.CustomOAuth2UserService
+import com.booster.config.oauth.handler.CustomOAuth2LoginFailureHandler
+import com.booster.config.oauth.handler.CustomOAuth2LoginSuccessHandler
 import com.booster.repositories.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
@@ -30,21 +33,10 @@ class SecurityConfig(
     val userRepository: UserRepository,
     val jwtService: JwtService,
     val customUserDetailsService: CustomUserDetailsService,
+    val customOAuth2UserService: CustomOAuth2UserService,
     val objectMapper: ObjectMapper,
     val corsConfig: CorsConfig
 ) {
-    companion object {
-        val NO_CHECK_URLS = setOf(
-            "/",
-            "/main",
-            "/favicon.ico",
-            "/css/**",
-            "/images/**",
-            "/js/**",
-            "/webjars/**",
-            "/api/user/register",
-        )
-    }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -53,7 +45,12 @@ class SecurityConfig(
 
     @Bean
     fun customOAuth2LoginSuccessHandler(): AuthenticationSuccessHandler {
-        return CustomOAuth2LoginSuccessHandler()
+        return CustomOAuth2LoginSuccessHandler(jwtService, userRepository)
+    }
+
+    @Bean
+    fun customOAuth2LoginFailureHandler(): AuthenticationFailureHandler {
+        return CustomOAuth2LoginFailureHandler()
     }
 
     @Bean
@@ -94,12 +91,14 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers(*NO_CHECK_URLS.toTypedArray()).permitAll()
+                    .requestMatchers(*SecurityConfigProperties.NO_CHECK_URLS.toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
             .oauth2Login { oauth2Login ->
                 oauth2Login
                     .successHandler(customOAuth2LoginSuccessHandler())
+                    .failureHandler(customOAuth2LoginFailureHandler())
+                    .userInfoEndpoint { it.userService(customOAuth2UserService) }
             }
             .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter::class.java)
             .addFilterBefore(JwtTokenAuthenticationFilter(jwtService, customUserDetailsService, userRepository), CustomJsonUsernamePasswordAuthenticationFilter::class.java)

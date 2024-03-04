@@ -30,7 +30,8 @@ data class OAuthAttributes(
 
     fun toEntity(socialType: SocialType, oauth2UserInfo: OAuth2UserInfo): User {
         return User.Builder()
-            .email(UUID.randomUUID().toString() + "@socialUser.com")
+            .email(oauth2UserInfo.email!!)
+//            .email(UUID.randomUUID().toString() + "@socialUser.com")
             .name(oauth2UserInfo.nickname!!)
             .imageUrl(oauth2UserInfo.imageUrl!!)
             .role(Role.GUEST)

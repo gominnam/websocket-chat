@@ -1,11 +1,13 @@
 package com.booster.services.impl
 
+import com.booster.dto.AuthDTO
 import com.booster.dto.UserDTO
 import com.booster.entity.User
 import com.booster.enums.ErrorCode
 import com.booster.exception.UserException
 import com.booster.repositories.UserRepository
 import com.booster.services.UserService
+import org.apache.tomcat.util.http.parser.Authorization
 import org.modelmapper.ModelMapper
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -43,6 +45,13 @@ class UserServiceImpl (
         }
 
         return modelMapper.map(loginUser, UserDTO::class.java)
+    }
+
+    override fun updateUser(authDTO: AuthDTO, authorization: String?) {
+        var user = modelMapper.map(authDTO, User::class.java)
+        user.email = authorization
+        var updatedUser = userRepository.save(user)
+        return modelMapper.map(updatedUser, UserDTO::class.java)
     }
 
     override fun deleteById(id: Long) = userRepository.deleteById(id)

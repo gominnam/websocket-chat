@@ -1,0 +1,37 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+    .form-submit {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+    .form-submit:hover {
+        background-color: #45a049;
+    }
+</style>
+<h2>회원가입 양식</h2>
+<form action="#">
+    <div class="form-group">
+        <label for="username">이름:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    <button type="submit" id="signUpButton" class="form-submit">회원가입</button>
+</form>
+<script src="@{/js/util/signup.js}"></script>
