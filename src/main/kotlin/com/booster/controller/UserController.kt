@@ -91,10 +91,4 @@ class UserController @Autowired constructor(
         userService.deleteById(id)
         return "delete success"
     }
-
-//    @GetMapping
-//    fun someRequest(authentication: Authentication): String {
-//        val authUser = authentication.toUser()
-//        return "Hello ${authUser.name}"
-//    }
 }

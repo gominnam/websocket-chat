@@ -1,6 +1,5 @@
 package com.booster.services
 
-import com.booster.dto.AuthDTO
 import com.booster.dto.UserDTO
 import org.springframework.stereotype.Component
 
@@ -10,5 +9,5 @@ interface UserService {
     fun findById(id: Long): UserDTO?
     fun login(userDTO: UserDTO?): UserDTO?
     fun deleteById(id: Long)
-    fun updateUser(authDTO: AuthDTO, authorization: String?)
+    fun updateUserName(userDTO: UserDTO, authorization: String): UserDTO?
 }

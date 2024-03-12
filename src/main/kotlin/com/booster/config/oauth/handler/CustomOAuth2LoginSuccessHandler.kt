@@ -31,7 +31,9 @@ class CustomOAuth2LoginSuccessHandler(
             // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
             if (oAuth2User.role === Role.GUEST) {
                 val accessToken = jwtService.createAccessToken(oAuth2User.email)
-                response.sendRedirect("/signup?token=$accessToken")
+                // /signup?token=accessToken
+                response.sendRedirect("/signup?accessToken=$accessToken")
+                log.info { "User Role is GUEST. Redirect to /signup" }
             } else {
                 val accessToken = jwtService.createAccessToken(oAuth2User.email)
                 val refreshToken = jwtService.createRefreshToken()

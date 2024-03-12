@@ -7,7 +7,9 @@ class SecurityConfigProperties {
     companion object {
         val NO_CHECK_URLS = setOf(
             "/",
+            "/components/**",
             "/main",
+            "/signup",
             "/error",
             "/favicon.ico",
             "/css/**",

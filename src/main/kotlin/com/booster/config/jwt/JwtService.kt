@@ -2,14 +2,16 @@ package com.booster.config.jwt
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.exceptions.JWTVerificationException
 import com.booster.entity.User
+import com.booster.enums.ErrorCode
+import com.booster.exception.AuthException
 import com.booster.repositories.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.*
@@ -93,9 +95,11 @@ class JwtService {
                 .build()
                 .verify(accessToken)
                 .getClaim(EMAIL_CLAIM).asString()
+        } catch (e: JWTVerificationException) { // JWT 라이브러리가 발생시킬 수 있는 구체적인 예외 유형
+            throw AuthException(ErrorCode.TOKEN_INVALID)
         } catch (e: Exception) {
-            log.error { "unvalided token" }
-            null
+            log.error { "Unexpected error: ${e.message}" }
+            return null
         }
     }
 

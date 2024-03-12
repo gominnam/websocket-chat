@@ -1,5 +1,7 @@
 package com.booster.dto
 
+import com.booster.entity.User
+
 data class UserDTO (
      var id: Long?,
      var email: String?,

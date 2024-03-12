@@ -11,6 +11,10 @@ class CommonException(private val errorCode: ErrorCode) : Exception(errorCode.de
         fun forbidden(): CommonException {
             return CommonException(ErrorCode.FORBIDDEN)
         }
+
+        fun serverError(): CommonException {
+            return CommonException(ErrorCode.SERVER_ERROR)
+        }
     }
 
     fun getHttpStatus(): Int{

@@ -9,34 +9,74 @@ signUpButton.addEventListener('click', async (event) => {
 let params = new URLSearchParams(window.location.search);
 let accessToken = params.get("accessToken");
 
-saveAccessTokenToLocalStorage(accessToken);
+// function signup(){
+//     const name = document.getElementById('username').value;
+//     const data = {
+//         name: name
+//     };
+//
+//     fetch('/api/oauth2/signup', {
+//         method: 'POST',
+//         body: JSON.stringify(data),
+//         headers: {
+//             'Content-Type': 'application/json; charset=UTF-8',
+//             Accept: 'application/json'
+//         }
+//     }).then(response => response.json())
+//         .then(data => {
+//             if(data.status === 200){
+//                 // window.location.href = "/chat";
+//                 //saveAccessTokenToLocalStorage(data.accessToken);
+//                 //saveRefreshTokenToLocalStorage(data.refreshToken);
+//                 //navigateTo("/chat");
+//             }else{
+//                 alert(data.message);
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//         });
+// }
 
-function signup(){
+async function signup(){
     const name = document.getElementById('username').value;
     const data = {
         name: name
     };
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+    let authToken= getAuthToken();
+    if(authToken){
+        headers[authToken.key] = authToken.value;
+    }
 
-    fetch('/api/oauth2/signup', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            Accept: 'application/json'
-        }
-    }).then(response => response.json())
-        .then(data => {
-            if(data.status === 200){
-                // window.location.href = "/chat";
-                //saveAccessTokenToLocalStorage(data.accessToken);
-                //saveRefreshTokenToLocalStorage(data.refreshToken);
-                //navigateTo("/chat");
-            }else{
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    showLoadingSpinner();
+    try {
+        const response = await fetch('/api/oauth2/signup', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(data),
         });
-}
 
+        if (response.ok) {
+            await navigateTo('/chat');
+        } else {
+            // 오류 처리
+            response.json().then(data => {
+                // Assuming the error message is in the 'message' field of the response
+                const errorMessage = data.message || "An unknown error occurred"; // Fallback message
+                window.alert(errorMessage);
+            }).catch(() => {
+                // This catch handles any errors that occur during the parsing process
+                window.alert("An error occurred while processing the error message.");
+                throw new Error('Network response was not ok and error message could not be retrieved');
+            });
+        }
+    } catch (error) {
+        console.error('요청 오류', error);
+    } finally {
+        // 화면 잠금 해제
+        hideLoadingSpinner();
+    }
+}

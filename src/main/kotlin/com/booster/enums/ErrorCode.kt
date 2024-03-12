@@ -9,4 +9,9 @@ enum class ErrorCode(val code: Int, val description: String) {
     UNAUTHORIZED(HttpStatus.FORBIDDEN, "Unauthorised or Bad Credentials"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "Forbidden"),
     HEADER_ERROR(HttpStatus.BAD_REQUEST, "Header Error"),
+
+    TOKEN_EXPIRED(HttpStatus.FORBIDDEN, "Token Expired"),
+    TOKEN_INVALID(HttpStatus.FORBIDDEN, "Token Invalid"),
+
+    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error"),
 }

@@ -17,10 +17,6 @@ class UserAuthenticationErrorHandler : BasicAuthenticationEntryPoint() {
         response: HttpServletResponse,
         ex: AuthenticationException
     ) {
-        /*response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getOutputStream().println(objectMapper.writeValueAsString(CommonException.unauthorized()));
-    */
         response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.addHeader("WWW-Authenticate", "Basic realm=$realmName")
         val writer = response.writer

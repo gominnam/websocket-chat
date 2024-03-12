@@ -25,7 +25,7 @@ function isAccessTokenExpired(token) {
 
 function getAuthToken(){
     const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
+    if (!accessToken || accessToken === 'null') {
         console.log("token is not exists.");
         return null;
     }
@@ -47,7 +47,8 @@ async function apiRequest(requestUrl, method) {
     let headers = {
         'Content-Type': 'application/json'
     };
-    const authToken = getAuthToken();
+    let authToken= getAuthToken();
+
     if(authToken){
        headers[authToken.key] = authToken.value;
     }
@@ -68,5 +69,21 @@ async function apiRequest(requestUrl, method) {
         }
     } catch (error) {
         console.error('Error validating token:', error);
+    }
+}
+
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+function saveTokenFromURL(url){
+    const accessToken = getQueryParam('accessToken');
+    const refreshToken = getQueryParam('refreshToken');
+    if(accessToken){
+        saveAccessTokenToLocalStorage(accessToken);
+    }
+    if(refreshToken){
+        saveRefreshTokenToLocalStorage(refreshToken);
     }
 }

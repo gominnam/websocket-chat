@@ -17,6 +17,7 @@ const navigateTo = (url) => {
 const App = async () => {
     let path = window.location.pathname === "/" ? "/main" : window.location.pathname;
     const route = routes.find(r => r.path === path) || routes.find(r => r.path === "/not-found");
+    saveTokenFromURL(window.location.search);
     let view = await apiRequest(baseApiUrl + route.path, route.method.toString());
     const appContainer = document.querySelector("#app");
     appContainer.innerHTML = view;
@@ -29,27 +30,18 @@ const App = async () => {
             script.src = src;
             script.async = false; // 필요에 따라 설정
             document.body.appendChild(script);
-        } else {
-            const script = document.createElement('script');
-            script.innerText = elem.innerText; // FIXME: remove
-            document.body.appendChild(script);
         }
+        // else {
+        //     const script = document.createElement('script');
+        //     script.innerText = elem.innerText; // FIXME: remove
+        //     document.body.appendChild(script);
+        // }
     });
 };
 
 window.addEventListener("popstate", App);
-//header있는 url
 
-//naviagteTo("/signup");
 document.addEventListener("DOMContentLoaded", () => {
-
-    document.body.addEventListener("click", e => {
-        const target = e.target.closest("[data-link]");
-        if (target) {
-            e.preventDefault();
-            navigateTo(target.href);
-        }
-    });
 
     App();
 });

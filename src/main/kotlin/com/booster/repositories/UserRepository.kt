@@ -1,6 +1,7 @@
 package com.booster.repositories
 
 import com.booster.entity.User
+import com.booster.enums.Role
 import com.booster.enums.SocialType
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -19,4 +20,8 @@ interface UserRepository: JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User SET refreshToken = ?2, updatedAt = CURRENT_TIMESTAMP WHERE email = ?1")
     fun updateRefreshTokenByEmail(email: String, refreshToken: String): Int
+    @Transactional
+    @Modifying
+    @Query("UPDATE User SET name = ?2, role = ?3 WHERE email = ?1")
+    fun updateUserNameByEmail(email: String, name: String, role: Role): Int
 }
