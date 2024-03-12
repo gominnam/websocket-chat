@@ -31,11 +31,6 @@ const App = async () => {
             script.async = false; // 필요에 따라 설정
             document.body.appendChild(script);
         }
-        // else {
-        //     const script = document.createElement('script');
-        //     script.innerText = elem.innerText; // FIXME: remove
-        //     document.body.appendChild(script);
-        // }
     });
 };
 

@@ -38,7 +38,7 @@ class CustomOAuth2LoginSuccessHandler(
                 val accessToken = jwtService.createAccessToken(oAuth2User.email)
                 val refreshToken = jwtService.createRefreshToken()
                 jwtService.updateRefreshToken(oAuth2User.email, refreshToken)
-                response.sendRedirect("/signin?accessToken=$accessToken&refreshToken=$refreshToken")
+                response.sendRedirect("/chat?accessToken=$accessToken&refreshToken=$refreshToken")
             }
         } catch (e: Exception) {
             throw e

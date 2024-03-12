@@ -6,7 +6,9 @@
 - Refactoring By applying design patterns into the project.
 - Using Kotlin instead of Java.
 - Using JWT for authentication.
+- Using SpringSecurity login and Oauth2 login.
 - Using Github-Actions for CI/CD to AWS EC2.
+
 
 
 ### Tables

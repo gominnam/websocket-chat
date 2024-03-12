@@ -10,6 +10,7 @@ class SecurityConfigProperties {
             "/components/**",
             "/main",
             "/signup",
+            "/chat",
             "/error",
             "/favicon.ico",
             "/css/**",
