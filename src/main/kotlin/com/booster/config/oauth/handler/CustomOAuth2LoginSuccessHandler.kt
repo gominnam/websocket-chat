@@ -31,7 +31,6 @@ class CustomOAuth2LoginSuccessHandler(
             if (oAuth2User.role === Role.GUEST) {
                 val accessToken = jwtService.createAccessToken(oAuth2User.email)
                 response.sendRedirect("/signup?accessToken=$accessToken")
-                log.info { "User Role is GUEST. Redirect to /signup" }
             } else {
                 val accessToken = jwtService.createAccessToken(oAuth2User.email)
                 val refreshToken = jwtService.createRefreshToken()
