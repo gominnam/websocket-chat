@@ -7,6 +7,7 @@ import com.booster.config.login.filter.CustomJsonUsernamePasswordAuthenticationF
 import com.booster.config.login.handler.LoginFailureHandler
 import com.booster.config.login.handler.LoginSuccessHandler
 import com.booster.config.oauth.CustomOAuth2UserService
+import com.booster.config.oauth.HttpCookieOAuth2AuthorizationRequestRepository
 import com.booster.config.oauth.handler.CustomOAuth2LoginFailureHandler
 import com.booster.config.oauth.handler.CustomOAuth2LoginSuccessHandler
 import com.booster.repositories.UserRepository
@@ -81,6 +82,11 @@ class SecurityConfig(
     }
 
     @Bean
+    fun cookieAuthorizationRequestRepository(): HttpCookieOAuth2AuthorizationRequestRepository {
+        return HttpCookieOAuth2AuthorizationRequestRepository()
+    }
+
+    @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain {
         http
@@ -99,6 +105,9 @@ class SecurityConfig(
                     .successHandler(customOAuth2LoginSuccessHandler())
                     .failureHandler(customOAuth2LoginFailureHandler())
                     .userInfoEndpoint { it.userService(customOAuth2UserService) }
+                    .authorizationEndpoint()
+                    .baseUri("/oauth2/authorization")
+                    .authorizationRequestRepository(cookieAuthorizationRequestRepository())
             }
             .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter::class.java)
             .addFilterBefore(JwtTokenAuthenticationFilter(jwtService, customUserDetailsService, userRepository), CustomJsonUsernamePasswordAuthenticationFilter::class.java)
