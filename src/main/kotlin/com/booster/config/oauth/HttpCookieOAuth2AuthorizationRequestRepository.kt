@@ -49,7 +49,11 @@ class HttpCookieOAuth2AuthorizationRequestRepository : AuthorizationRequestRepos
     }
 
     override fun removeAuthorizationRequest(request: HttpServletRequest, response: HttpServletResponse?): OAuth2AuthorizationRequest? {
-        return this.loadAuthorizationRequest(request)
+        val authorizationRequest = this.loadAuthorizationRequest(request)
+        if (response != null) {
+            this.removeAuthorizationRequestCookies(request, response)
+        }
+        return authorizationRequest
     }
 
     fun removeAuthorizationRequestCookies(

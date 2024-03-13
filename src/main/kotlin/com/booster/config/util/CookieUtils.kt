@@ -26,6 +26,7 @@ object CookieUtils {
         val cookie = Cookie(name, value)
         cookie.path = "/"
         cookie.isHttpOnly = true
+        cookie.secure = true
         cookie.maxAge = maxAge
         response.addCookie(cookie)
     }
