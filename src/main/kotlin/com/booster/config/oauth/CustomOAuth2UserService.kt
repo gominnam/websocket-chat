@@ -10,7 +10,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
-import java.util.Collections
+import java.util.*
+
 
 @Service
 class CustomOAuth2UserService(
@@ -19,6 +20,8 @@ class CustomOAuth2UserService(
 
     companion object {
         private const val GOOGLE = "google"
+        private const val NAVER = "naver"
+        private const val KAKAO = "kakao"
     }
 
     private val log = KotlinLogging.logger {}
@@ -46,11 +49,16 @@ class CustomOAuth2UserService(
         )
     }
 
-    private fun getSocialType(registrationId: String): SocialType =
-        when (registrationId) {
-            GOOGLE -> SocialType.GOOGLE
-            else -> SocialType.GOOGLE
+
+    private fun getSocialType(registrationId: String): SocialType {
+        if (NAVER == registrationId) {
+            return SocialType.NAVER
         }
+        if (KAKAO == registrationId) {
+            return SocialType.KAKAO
+        }
+        return SocialType.GOOGLE
+    }
 
     private fun getUser(attributes: OAuthAttributes, socialType: SocialType): User =
         userRepository.findBySocialTypeAndSocialId(socialType, attributes.oauth2UserInfo.id.toString()).orElseGet {

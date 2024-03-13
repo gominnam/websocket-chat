@@ -1,11 +1,13 @@
 package com.booster.config.oauth
 
 import com.booster.config.oauth.userinfo.GoogleUserInfo
+import com.booster.config.oauth.userinfo.KakaoUserInfo
+import com.booster.config.oauth.userinfo.NaverUserInfo
 import com.booster.config.oauth.userinfo.OAuth2UserInfo
 import com.booster.entity.User
 import com.booster.enums.Role
 import com.booster.enums.SocialType
-import java.util.*
+
 
 data class OAuthAttributes(
     val nameAttributeKey: String,
@@ -15,7 +17,8 @@ data class OAuthAttributes(
         fun of(socialType: SocialType, userNameAttributeName: String, attributes: Map<String, Any>): OAuthAttributes {
             return when (socialType) {
                 SocialType.GOOGLE -> ofGoogle(userNameAttributeName, attributes)
-                else -> throw IllegalArgumentException("Unsupported social type")
+                SocialType.NAVER -> ofNaver(userNameAttributeName, attributes)
+                SocialType.KAKAO -> ofKakao(userNameAttributeName, attributes)
             }
         }
 
@@ -26,12 +29,24 @@ data class OAuthAttributes(
             )
         }
 
+        private fun ofNaver(userNameAttributeName: String, attributes: Map<String, Any>): OAuthAttributes {
+            return OAuthAttributes(
+                nameAttributeKey = userNameAttributeName,
+                oauth2UserInfo = NaverUserInfo(attributes)
+            )
+        }
+
+        private fun ofKakao(userNameAttributeName: String, attributes: Map<String, Any>): OAuthAttributes {
+            return OAuthAttributes(
+                nameAttributeKey = userNameAttributeName,
+                oauth2UserInfo = KakaoUserInfo(attributes)
+            )
+        }
     }
 
     fun toEntity(socialType: SocialType, oauth2UserInfo: OAuth2UserInfo): User {
         return User.Builder()
             .email(oauth2UserInfo.email!!)
-//            .email(UUID.randomUUID().toString() + "@socialUser.com")
             .name(oauth2UserInfo.nickname!!)
             .imageUrl(oauth2UserInfo.imageUrl!!)
             .role(Role.GUEST)

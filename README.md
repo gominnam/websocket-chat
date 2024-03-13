@@ -62,3 +62,4 @@
 * [Spring Security Reference1](https://github.com/thombergs/code-examples/tree/master/spring-security/getting-started)
 * [Spring Security Reference2](https://spring.io/guides/gs/securing-web)
 * [Chat-GPT](https://chat.openai.com/)
+* [kakao-oauth2-api](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api)
