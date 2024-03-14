@@ -17,11 +17,17 @@ userSignInButton.addEventListener('click', async (event) => {
     await login();
 });
 
+userSingUpButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await signup();
+});
+
+
 
 async function login(){
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    if(!loginValidation(email, password)) return;
+    if(!signValidation(email, password)) return;
 
     const data = {
         email: email,
@@ -54,10 +60,11 @@ async function login(){
     }
 }
 
-userSingUpButton.addEventListener('click', () => {
+async function signup(){
     const email = document.getElementById('save-email').value;
     const name = document.getElementById('save-name').value;
     const password = document.getElementById('save-password').value;
+    if(!signValidation(email, password)) return;
     const data = {
         email: email,
         password: password,
@@ -82,15 +89,19 @@ userSingUpButton.addEventListener('click', () => {
         .catch(error => {
             console.error('Error:', error);
         });
-});
+}
 
-function loginValidation(email, password){
-    if(email == null || email === ""){
+function signValidation(email, password){
+    if(email == null || email === "" || !email.includes('@')){
         alert("Email is required");
         return false;
     }
     if(password == null || password === ""){
         alert("Password is required");
+        return false;
+    }
+    if(password.length < 8){
+        alert("password must be at least 8 characters long");
         return false;
     }
     return true;
