@@ -13,9 +13,9 @@ class LoginFailureHandler : SimpleUrlAuthenticationFailureHandler() {
         request: HttpServletRequest?, response: HttpServletResponse,
         exception: AuthenticationException
     ) {
-        response.status = HttpServletResponse.SC_BAD_REQUEST
+        response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.characterEncoding = "UTF-8"
-        response.contentType = "text/plain;charset=UTF-8"
-        response.writer.write("login failed. message : ${exception.message}")
+        response.contentType = "application/json"
+        response.writer.write("{\"error\": \"${exception.message}\"}")
     }
 }

@@ -68,3 +68,12 @@ $(function () {
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendMessage(); });
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem('accessToken');
+    if(token){
+        const user = getParsedToken(token);
+        console.log(user);
+    }
+});

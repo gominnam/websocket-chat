@@ -2,6 +2,7 @@ package com.booster.config
 
 import com.booster.config.jwt.JwtService
 import com.booster.config.jwt.filter.JwtTokenAuthenticationFilter
+import com.booster.config.login.CustomDaoAuthenticationProvider
 import com.booster.config.login.CustomUserDetailsService
 import com.booster.config.login.filter.CustomJsonUsernamePasswordAuthenticationFilter
 import com.booster.config.login.handler.LoginFailureHandler
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -56,9 +56,10 @@ class SecurityConfig(
 
     @Bean
     fun authenticationManager(): AuthenticationManager? {
-        val provider = DaoAuthenticationProvider()
-        provider.setPasswordEncoder(passwordEncoder())
-        provider.setUserDetailsService(customUserDetailsService)
+        val provider = CustomDaoAuthenticationProvider().apply {
+            setPasswordEncoder(passwordEncoder())
+            setUserDetailsService(customUserDetailsService)
+        }
         return ProviderManager(listOf(provider))
     }
 

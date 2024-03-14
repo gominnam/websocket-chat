@@ -19,6 +19,7 @@ class SecurityConfigProperties {
             "/webjars/**",
             "/oauth2/**",
             "/login/**",
+            "/api/login",
             "/api/user/register"
         )
     }
