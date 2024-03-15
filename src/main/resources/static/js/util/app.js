@@ -28,7 +28,7 @@ const App = async () => {
         if (src) {
             const script = document.createElement('script');
             script.src = src;
-            script.async = true; // 필요에 따라 설정
+            script.async = true;
             document.body.appendChild(script);
         } else {
             eval(elem.textContent);

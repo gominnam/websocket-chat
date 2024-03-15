@@ -30,7 +30,7 @@ class WebSocketConfiguration : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/websocket-chat")
-            .setAllowedOrigins("http://localhost:8080", "https://boosterko.kr")  // Change in production: "https://boosterko.kr"
+            .setAllowedOrigins("https://boosterko.kr")
             .withSockJS()
     }
 
