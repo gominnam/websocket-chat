@@ -11,7 +11,7 @@ object CookieUtils {
     fun getCookie(request: HttpServletRequest, name: String): Optional<Cookie> {
         val cookies = request.cookies
 
-        if (cookies != null && cookies.size > 0) {
+        if (cookies != null && cookies.isNotEmpty()) {
             for (cookie in cookies) {
                 if (cookie.name == name) {
                     return Optional.of(cookie)
@@ -36,12 +36,11 @@ object CookieUtils {
         name: String
     ) {
         val cookies = request.cookies
-
-        if (cookies != null && cookies.size > 0) {
+        if (cookies != null) {
             for (cookie in cookies) {
                 if (cookie.name == name) {
-                    cookie.path = "/"
                     cookie.value = ""
+                    cookie.path = "/"
                     cookie.maxAge = 0
                     response.addCookie(cookie)
                 }

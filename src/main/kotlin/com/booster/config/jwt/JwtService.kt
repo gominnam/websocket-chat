@@ -47,12 +47,13 @@ class JwtService {
         private const val BEARER = "Bearer "
     }
 
-    fun createAccessToken(email: String?): String {
+    fun createAccessToken(email: String?, name: String?): String {
         val now = Date()
         return JWT.create()
             .withSubject(ACCESS_TOKEN_SUBJECT)
             .withExpiresAt(Date(now.time + accessTokenExpirationTime!!))
             .withClaim(EMAIL_CLAIM, email)
+            .withClaim(NAME_CLAIM, name)
             .sign(Algorithm.HMAC512(secretKey))
     }
 
@@ -136,8 +137,8 @@ class JwtService {
         return userDetails.username == email && isTokenValid(token)
     }
 
-    fun issueTokens(email: String): Pair<String, String> {
-        val accessToken = createAccessToken(email)
+    fun issueTokens(email: String, name: String): Pair<String, String> {
+        val accessToken = createAccessToken(email, name)
         val refreshToken = createRefreshToken()
         updateRefreshToken(email, refreshToken)
         return Pair(accessToken, refreshToken)

@@ -66,7 +66,7 @@ class JwtTokenAuthenticationFilter(
     private fun checkRefreshTokenAndReIssueAccessToken(response: HttpServletResponse?, refreshToken: String?) {
         userRepository.findByRefreshToken(refreshToken)
             .ifPresent { user ->
-                val reIssuedAccessToken = jwtService.createAccessToken(user.email)
+                val reIssuedAccessToken = jwtService.createAccessToken(user.email, user.name)
                 jwtService.sendAccessToken(response!!, reIssuedAccessToken)
             }
     }

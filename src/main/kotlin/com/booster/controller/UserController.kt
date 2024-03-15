@@ -37,7 +37,7 @@ class UserController @Autowired constructor(
                     .build()
             }
         }
-        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email!!)
+        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email!!, userDTO.name!!)
         log.info{"accessToken : $accessToken, refreshToken : $refreshToken"}
 
         return ApiResponse.Builder<AuthResponse>()
@@ -58,7 +58,7 @@ class UserController @Autowired constructor(
                 .message(e.message)
                 .build()
         }
-        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email.toString())
+        val (accessToken, refreshToken) = jwtService.issueTokens(userDTO.email.toString(), userDTO.name.toString())
         val authResponse = AuthResponse(accessToken, refreshToken)
         return ApiResponse.Builder<AuthResponse>()
             .status(HttpStatus.OK)

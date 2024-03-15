@@ -29,10 +29,10 @@ class CustomOAuth2LoginSuccessHandler(
         try {
             val oAuth2User: CustomOAuth2User = authentication.principal as CustomOAuth2User
             if (oAuth2User.role === Role.GUEST) {
-                val accessToken = jwtService.createAccessToken(oAuth2User.email)
+                val accessToken = jwtService.createAccessToken(oAuth2User.email, oAuth2User.name)
                 response.sendRedirect("/signup?accessToken=$accessToken")
             } else {
-                val accessToken = jwtService.createAccessToken(oAuth2User.email)
+                val accessToken = jwtService.createAccessToken(oAuth2User.email, oAuth2User.name)
                 val refreshToken = jwtService.createRefreshToken()
                 jwtService.updateRefreshToken(oAuth2User.email, refreshToken)
                 response.sendRedirect("/chat?accessToken=$accessToken&refreshToken=$refreshToken")

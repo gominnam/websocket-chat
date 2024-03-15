@@ -1,6 +1,7 @@
 package com.booster.config.login.handler
 
 import com.booster.config.jwt.JwtService
+import com.booster.config.login.CustomUserDetails
 import com.booster.entity.User
 import com.booster.repositories.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -27,7 +28,8 @@ class LoginSuccessHandler(
         authentication: Authentication
     ) {
         val email = extractUsername(authentication)
-        val accessToken = jwtService.createAccessToken(email)
+        val name = extractName(authentication)
+        val accessToken = jwtService.createAccessToken(email, name)
         val refreshToken = jwtService.createRefreshToken()
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken)
@@ -40,8 +42,12 @@ class LoginSuccessHandler(
     }
 
     private fun extractUsername(authentication: Authentication): String {
-        val userDetails = authentication.principal as UserDetails
+        val userDetails = authentication.principal as CustomUserDetails
         return userDetails.username
     }
 
+    private fun extractName(authentication: Authentication): String {
+        val userDetails = authentication.principal as CustomUserDetails
+        return userDetails.name
+    }
 }
