@@ -62,8 +62,7 @@ async function apiRequest(requestUrl, method) {
             if(token){
                 saveAccessTokenToLocalStorage(token);
             }
-            const htmlSource = await response.text(); // 응답 본문을 문자열로 변환
-            return htmlSource;
+            return await response.text();
         } else {
             console.error("Network response was not ok");
         }
@@ -98,4 +97,32 @@ function getParsedToken(token) {
     const user = JSON.parse(jsonPayload);
 
     return user;
+}
+
+async function apiRequest(requestUrl, method) {
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+    let authToken= getAuthToken();
+
+    if(authToken){
+        headers[authToken.key] = authToken.value;
+    }
+    try {
+        const response = await fetch(requestUrl, {
+            method: method,
+            headers: headers
+        });
+        if (response.ok) {
+            const token = response.headers.get('Authorization');
+            if(token){
+                saveAccessTokenToLocalStorage(token);
+            }
+            return await response.text();
+        } else {
+            console.error("Network response was not ok");
+        }
+    } catch (error) {
+        console.error('Error validating token:', error);
+    }
 }

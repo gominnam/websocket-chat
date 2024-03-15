@@ -71,4 +71,13 @@ class UserServiceImpl (
     }
 
     override fun deleteById(id: Long) = userRepository.deleteById(id)
+
+    override fun findByEmail(email: String?): UserDTO? {
+        if(email == null) {
+            throw UserException(ErrorCode.USER_NOT_FOUND)
+        }
+        val user = userRepository.findByEmail(email)
+                                .orElseThrow { throw UserException(ErrorCode.USER_NOT_FOUND) }
+        return modelMapper.map(user, UserDTO::class.java)
+    }
 }

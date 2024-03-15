@@ -28,8 +28,10 @@ const App = async () => {
         if (src) {
             const script = document.createElement('script');
             script.src = src;
-            script.async = false; // 필요에 따라 설정
+            script.async = true; // 필요에 따라 설정
             document.body.appendChild(script);
+        } else {
+            eval(elem.textContent);
         }
     });
 };

@@ -1,4 +1,7 @@
-var stompClient = null;
+
+
+let stompClient = null;
+let isConnecting = false;
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -12,16 +15,33 @@ function setConnected(connected) {
 }
 
 function connect() {
-    if(!connectValidation()) return;
-    var socket = new SockJS('/websocket-chat');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
+    if(isConnecting || !connectValidation()) return;
+    isConnecting = true;
+    const token = localStorage.getItem('accessToken');
+    if(!token){
+        alert("Please login first");
+        isConnecting = false;
+        return;
+    }
+    const socket = new SockJS("/websocket-chat");
+    let options = {debug: false};
+
+    stompClient = Stomp.over(socket, options);
+
+    let headers = {Authorization: "Bearer " + token};
+    console.log("headers: ", headers)
+    stompClient.connect(headers, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/greetings', function (greeting) {
             showMessage(JSON.parse(greeting.body));
         });
         joinRoom();
+        isConnecting = false;
+    }, function(error) {
+        alert("Failed to connect to the WebSocket server. Please try again later.");
+        console.error('WebSocket connection error: ', error);
+        isConnecting = false;
     });
 }
 
@@ -31,6 +51,7 @@ function disconnect() {
         stompClient.disconnect();
     }
     setConnected(false);
+    isConnecting = false;
     console.log("Disconnected");
 }
 
@@ -54,7 +75,7 @@ function showMessage(message) {
 
 function connectValidation() {
     if($("#name").val() === "") {
-        alert("Please enter your nickname");
+        alert("Please Login first");
         return false;
     }
     return true;
@@ -70,10 +91,12 @@ $(function () {
 });
 
 
-document.addEventListener("DOMContentLoaded", () => {
+(() => {
     const token = localStorage.getItem('accessToken');
-    if(token){
+    if (token) {
         const user = getParsedToken(token);
-        console.log(user);
+        if (user) {
+            document.getElementById('name').value = user.name;
+        }
     }
-});
+})();

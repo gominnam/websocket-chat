@@ -91,4 +91,23 @@ class UserController @Autowired constructor(
         userService.deleteById(id)
         return "delete success"
     }
+
+    @GetMapping("/me/{email}")
+    fun findUserByEmail(@PathVariable email: String): ApiResponse<UserResponse> {
+        val userDTO: UserDTO?
+        try{
+            userDTO = userService.findByEmail(email)
+        } catch (e: UserException){
+            return ApiResponse.Builder<UserResponse>()
+                .status(e.getHttpStatus())
+                .message(e.message)
+                .build()
+        }
+        val userResponse = modelMapper.map(userDTO, UserResponse::class.java)
+        return ApiResponse.Builder<UserResponse>()
+            .status(HttpStatus.OK)
+            .message("find user")
+            .data(userResponse)
+            .build()
+    }
 }

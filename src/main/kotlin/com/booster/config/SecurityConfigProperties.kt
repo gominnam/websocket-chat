@@ -20,7 +20,8 @@ class SecurityConfigProperties {
             "/oauth2/**",
             "/login/**",
             "/api/login",
-            "/api/user/register"
+            "/api/user/register",
+            "/websocket-chat/**"
         )
     }
 }
