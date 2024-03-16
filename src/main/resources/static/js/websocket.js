@@ -90,7 +90,8 @@ $(function () {
     $( "#send" ).click(function() { sendMessage(); });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+
+(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
         const user = getParsedToken(token);
@@ -98,4 +99,4 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('name').value = user.name;
         }
     }
-});
+})();

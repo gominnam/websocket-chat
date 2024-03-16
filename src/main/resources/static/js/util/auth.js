@@ -79,6 +79,7 @@ function getQueryParam(param) {
 function saveTokenFromURL(url){
     const accessToken = getQueryParam('accessToken');
     const refreshToken = getQueryParam('refreshToken');
+    console.log(accessToken +", " + refreshToken);
     if(accessToken){
         saveAccessTokenToLocalStorage(accessToken);
     }
@@ -97,32 +98,4 @@ function getParsedToken(token) {
     const user = JSON.parse(jsonPayload);
 
     return user;
-}
-
-async function apiRequest(requestUrl, method) {
-    let headers = {
-        'Content-Type': 'application/json'
-    };
-    let authToken= getAuthToken();
-
-    if(authToken){
-        headers[authToken.key] = authToken.value;
-    }
-    try {
-        const response = await fetch(requestUrl, {
-            method: method,
-            headers: headers
-        });
-        if (response.ok) {
-            const token = response.headers.get('Authorization');
-            if(token){
-                saveAccessTokenToLocalStorage(token);
-            }
-            return await response.text();
-        } else {
-            console.error("Network response was not ok");
-        }
-    } catch (error) {
-        console.error('Error validating token:', error);
-    }
 }
