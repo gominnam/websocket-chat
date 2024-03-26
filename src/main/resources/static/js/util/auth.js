@@ -95,7 +95,5 @@ function getParsedToken(token) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
 
-    const user = JSON.parse(jsonPayload);
-
-    return user;
+    return JSON.parse(jsonPayload);
 }

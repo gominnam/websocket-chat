@@ -95,6 +95,7 @@ $(function () {
     const token = localStorage.getItem('accessToken');
     if (token) {
         const user = getParsedToken(token);
+        console.log("user: ", user)
         if (user) {
             document.getElementById('name').value = user.name;
         }

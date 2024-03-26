@@ -30,8 +30,6 @@ const App = async () => {
             script.src = src;
             script.async = true;
             document.body.appendChild(script);
-        } else {
-            eval(elem.textContent);
         }
     });
 };

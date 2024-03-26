@@ -1,17 +1,16 @@
 # Getting Started
 
-### Project Purpose
+### 1. Project Purpose
 
 - User can chat with other users in real time.(Using Spring MVC and WebSocket)
 - Refactoring By applying design patterns into the project.
 - Using Kotlin instead of Java.
 - Using JWT for authentication.
-- Using SpringSecurity login and Oauth2 login.
+- Using SpringSecurity login and Oauth2 login(Google, Naver, Kakao).
 - Using Github-Actions for CI/CD to AWS EC2.
 
 
-
-### Tables
+### 2. Tables
 
 - User
 
@@ -31,7 +30,7 @@
 
 
 
-### Skills
+### 3. Development Environment 
 
 #### - backend
 * Kotlin
@@ -39,7 +38,6 @@
 * JPA, Hibernate, flyway
 * Junit5, Mockito
 * Gradle
-* Intellij IDEA
 
 #### - devops
 * Github Actions
@@ -50,9 +48,19 @@
 #### - frontend
 * Javascript
 * Spring MVC
-* WebSocket
 
 
+### 4. Project Structure
+
+<img src="./src/main/resources/static/images/readme/websocket-chat-flow.png" width="400" height="300" alt="flow-chart">
+
+
+### 5. How to deploy
+
+- when you push the code to the main branch, the github-action will be triggered.
+- you must set the environment variables in the github repository settings.
+- your server(AWS) must install docker, certbot
+- AWS RDS(Mysql) must be created.
 
 ### Reference Documentation And Sites
 
