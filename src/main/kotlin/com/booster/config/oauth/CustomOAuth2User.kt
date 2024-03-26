@@ -9,5 +9,6 @@ class CustomOAuth2User(
     attributes: Map<String, Any>,
     nameAttributeKey: String,
     val email: String,
-    val role: Role
+    val role: Role,
+    val nickName: String
 ) : DefaultOAuth2User(authorities, attributes, nameAttributeKey)

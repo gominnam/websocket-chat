@@ -28,7 +28,9 @@ class CustomOAuth2LoginSuccessHandler(
     ) {
         try {
             val oAuth2User: CustomOAuth2User = authentication.principal as CustomOAuth2User
-            val accessToken = jwtService.createAccessToken(oAuth2User.email, oAuth2User.name)
+            log.info { "oAuth2User info:: ${oAuth2User.name}, ${oAuth2User.nickName}"  }
+
+            val accessToken = jwtService.createAccessToken(oAuth2User.email, oAuth2User.nickName)
             if (oAuth2User.role === Role.GUEST) {
                 response.sendRedirect("/signup?accessToken=$accessToken")
             } else {

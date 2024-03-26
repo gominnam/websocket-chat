@@ -45,7 +45,8 @@ class CustomOAuth2UserService(
             attributes,
             extractAttributes.nameAttributeKey,
             createdUser.email,
-            createdUser.role
+            createdUser.role,
+            createdUser.name,
         )
     }
 

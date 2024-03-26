@@ -81,6 +81,8 @@ async function signup(){
     }).then(response => response.json())
         .then(data => {
             if(data.status === 200){
+                saveAccessTokenToLocalStorage(data.data.accessToken);
+                saveRefreshTokenToLocalStorage(data.data.refreshToken);
                 window.location.href = "/chat";
             }else{
                 alert(data.message);
