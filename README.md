@@ -52,7 +52,7 @@
 
 ### 4. Project Structure
 
-website: https://boosterko.kr
+Web Link: https://boosterko.kr</br></br>
 <img src="./src/main/resources/static/images/readme/websocket-chat-flow.png" width="400" height="300" alt="flow-chart">
 
 
