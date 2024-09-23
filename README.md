@@ -74,6 +74,7 @@
 
 <img src="./src/main/resources/static/images/readme/login-page.png" width="300" height="200" alt="login-page">
 
+</br></br>
 
 **2. 회원가입**
 
@@ -100,6 +101,8 @@
   </div>
 </div>
 
+</br></br>
+
 **3. 채팅 페이지**
 
 <div style="display: flex; flex-wrap: wrap;">
@@ -115,8 +118,9 @@
     <img src="./src/main/resources/static/images/readme/chat-page-3.png" width="200" height="150" alt="chat-page-3">
     <p style="text-align: center;">3: 채팅방 퇴장</p>
   </div>
-</div>>
+</div>
 
+</br></br>
 ### 참고 문서 및 사이트 
 
 * [Github WebSocket Reference](https://github.com/dailycodebuffer/Spring-MVC-Tutorials/blob/master/spring-websocket)
