@@ -80,45 +80,42 @@
 <div style="display: flex; flex-wrap: wrap;">
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/google-sign-up-1.png" width="200" height="150" alt="signup-page-1">
-    <p style="text-align: center;">1</p>
+    <p style="text-align: center;">1: 이메일 입력</p>
   </div>
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/google-sign-up-2.png" width="200" height="150" alt="signup-page-2">
-    <p style="text-align: center;">2</p>
+    <p style="text-align: center;">2: 패스워드 입력</p>
   </div>
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/google-sign-up-3.png" width="200" height="150" alt="signup-page-3">
-    <p style="text-align: center;">3</p>
+    <p style="text-align: center;">3: 모바일 본인인증</p>
   </div>
-</div>
-<div style="display: flex; flex-wrap: wrap;">
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/google-sign-up-4.png" width="200" height="150" alt="signup-page-4">
-    <p style="text-align: center;">4</p>
+    <p style="text-align: center;">4: 회원가입 동의 여부</p>
   </div>
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/google-sign-up-5.png" width="200" height="150" alt="signup-page-5">
-    <p style="text-align: center;">5</p>
+    <p style="text-align: center;">5: 사이트 닉네임 입력</p>
   </div>
 </div>
-
 
 **3. 채팅 페이지**
 
 <div style="display: flex; flex-wrap: wrap;">
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/chat-page-1.png" width="200" height="150" alt="chat-page-1">
-    <p style="text-align: center;">1</p>
+    <p style="text-align: center;">1: 채팅방 접속</p>
   </div>
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/chat-page-2.png" width="200" height="150" alt="chat-page-2">
-    <p style="text-align: center;">2</p>
+    <p style="text-align: center;">2: 다른 유저와 채팅</p>
   </div>
   <div style="margin: 10px;">
     <img src="./src/main/resources/static/images/readme/chat-page-3.png" width="200" height="150" alt="chat-page-3">
-    <p style="text-align: center;">3</p>
+    <p style="text-align: center;">3: 채팅방 퇴장</p>
   </div>
-</div>
+</div>>
 
 ### 참고 문서 및 사이트 
 
