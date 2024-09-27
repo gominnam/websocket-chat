@@ -53,7 +53,7 @@ async function login(){
             throw new Error('Network response was not ok');
         }
     } catch (error) {
-        console.error('요청 오류', error);
+        alert("Invalid email or password");
     } finally {
         // 화면 잠금 해제
         hideLoadingSpinner();
